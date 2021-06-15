@@ -17,7 +17,7 @@ const chariot = ChariotConsole({ label: "signin-page" });
 export type onSignInCallbackHandler = (user: IUser) => void;
 
 interface IProps {
-  onAuthenticated: (jwt: IJwt, callback: onSignInCallbackHandler, user?: IUser) => void
+  onAuthenticated: (jwt: IJwt) => void
 }
 interface IState {
   version: string
@@ -28,27 +28,21 @@ export default class SignInPage extends React.Component<IProps, IState> {
     version: "x.x.x"
   }
 
-  onDeepLinkSSOCallbackHandler = async (jwt: IJwt) => {
-    const authenticateUser = async (provider: string, jwt: IJwt, user: IUser) => {
-      await AuthenticationClient.authenticate(provider, {
-        "access_token": jwt.access_token,
-        "expires_in": jwt.expires_in,
-        "token_type": jwt.token_type
-      });
-
-      this.props.onAuthenticated(jwt, () => {
-        authenticateUser('google', jwt, user);
-      }, user)
-    }
-    try {
-      const myInfo = await UserClient.me();
-      authenticateUser('google', jwt, myInfo);
-    } catch (ex) {
-      chariot.debug(ex);
-    }
+  componentDidMount() {
+    EventStreamer.on("DEEPLINK:SSO_CALLBACK", this.onDeepLinkSSOCallbackHandler)
   }
 
-  onAutenticateHandler = async () => {
+  onDeepLinkSSOCallbackHandler = async (provider: string, jwt: IJwt) => {    
+    await AuthenticationClient.authenticate(provider, {
+      "access_token": jwt.access_token,
+      "expires_in": jwt.expires_in,
+      "token_type": jwt.token_type
+    });
+
+    this.props.onAuthenticated(jwt);
+  }
+
+  onAutenticateHandler = async (provider:string) => {
     /*
     const jwt = {
       access_token: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmltYXJ5c2lkIjoiNGE0NDEzMTg1NGM4YWU3ZmI3ZTRhNjkxZWRlNmEyMmUiLCJ1bmlxdWVfbmFtZSI6IkRhdmlkIE11w7FveiIsImVtYWlsIjoiZG11bm96Z2FldGVAZ21haWwuY29tIiwiY291bnRyeSI6IkNMIiwiYXZhdGFyIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EtL0FBdUU3bUNDalFEQmVJeXFtWkdWS19BMlZMcjZyS2dUdzlnSFRTMk0wTjg0R0E9czk2LWMiLCJncm91cHNpZCI6IlVTRVIiLCJpc3MiOiJTaW5nbGVTaWduT24iLCJ0eXBlIjoiQmVhcmVyIiwiYXVkIjoiV2ViIiwic2NvcGUiOiI3MjU3MjcxOTE1NzE3MjAzNDM3MzQ6b3duZXIgMTUzMTc2NDYxNTczNTcwNTUyMDAwOm93bmVyIDE1MzE3NjQ2MTU3MzU3MDU1MTg0Njpvd25lciA3MjU3MjcxOTE1NzE3MjAzNDM3MzU6b3duZXIgNzE1ODkwODgxNTg0ODE5NjkzNjkyOm93bmVyIDEwMTAxMDEwMTAxMDEwMTAxMDEwMTpvd25lciAxMDEwMTAxMDEwMTAxMDEwMTAxMDE6ZGV2ZWxvcGVyIDEwMTAxMDEwMTAxMDEwMTAxMDEwMTpzaG9wcGVyIDEwMTAxMDEwMTAxMDEwMTAxMDEwMTphcCAxMDEwMTAxMDEwMTAxMDEwMTAxMDE6bGF0IDkxNzI3ODEwMTU4NTc1NjcwMTg2MTpvd25lciA1Nzk3NzY5MjE1ODc1NzU0MTgzOTk6b3duZXIgMTQxNzg5NjQxNTg1NzU2ODY3Mjc5Om93bmVyIDc4ODA4MDQ1MTU4NzU3NTUwMjAyNzpvd25lciA3NzM2OTkzNDE1ODc1NzU1NjE4OTQ6b3duZXIgMjc1MTcwODExNTg3NTc1NjI1NDcwOm93bmVyIDYzNzYxNjA1MTU4NzU3NTY3MDk0MDpvd25lciA1NTIzODMzNzE1ODc1NzUzMTY0NzQ6b3duZXIgMTUzMTc2NDYxNTczNTcwNTUxODEwOm93bmVyIDIwMjAyMDIwMjAyMDIwMjAyMDIwMjpvd25lciIsImlhdCI6MTYwOTg3NjU2NSwiZXhwIjoxNjE3NjUyNTY1fQ.DuvoS5CODHezmOaG2wX10k1Cjt1HBGDCXyqwgn_2jchbQ-SNeTJAP56d-xxRXlNEFx1TW2hnFqFAGs7HHa-rlSg9i939dNiEfCFbJrICdMNdHgk6R5Zd2HD-HiJw1ADImPD1h1_77JyXmaEKE5Cx0hFu1M4yluC09shKqWJW2c4",
@@ -70,7 +64,7 @@ export default class SignInPage extends React.Component<IProps, IState> {
       if (e.origin === e.data.origin && !loggedIn) {
 
         // Simulate the deeplink process if we were in a mobile
-        EventStreamer.emit("DEEPLINK:SSO_CALLBACK", e.data)
+        EventStreamer.emit("DEEPLINK:SSO_CALLBACK", "google", e.data)
 
         loggedIn = true;
       } else if (!loggedIn) {
@@ -99,7 +93,7 @@ export default class SignInPage extends React.Component<IProps, IState> {
       Sign In
 
 
-      <button onClick={this.onAutenticateHandler}>
+      <button onClick={()=>this.onAutenticateHandler('google')}>
         <img src={GoogleIcon} alt="google"></img>&nbsp;
         {localize('LOGIN_WITH_GOOGLE')}
       </button>

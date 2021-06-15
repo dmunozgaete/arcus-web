@@ -63,7 +63,7 @@ export default class App extends React.Component<{}, PageState> {
     });
   }
 
-  onAuthenticatedHandler = (jwt: IJwt, callback?: onSignInCallbackHandler) => {
+  onAuthenticatedHandler = (jwt: IJwt) => {
     this.setState({
       authenticated: true,
     })
@@ -92,7 +92,8 @@ export default class App extends React.Component<{}, PageState> {
     }
 
 
-    return <App>
+    return <div>
+      <div>Header</div>
       <Router >
         <Switch>
           {/* CORE PATHS */}
@@ -108,7 +109,7 @@ export default class App extends React.Component<{}, PageState> {
           <Route path="/" component={RootHomePage} exact={true} />
         </Switch>
       </Router>
-    </App>;
+    </div>;
   }
 }
 

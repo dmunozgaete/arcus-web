@@ -9,13 +9,8 @@ class UserClient extends RESTClient implements WithBootedClient {
   constructor(config: IConfig) {
     super({ baseURL: config.baseURL });
   }
-
-  async boot() { }
   
-  async me(): Promise<IUser> {
-    const response = await this.axios.get('/users/me');
-    return response.data;
-  }
+  async boot() { }
 }
 
 export interface IUser {
