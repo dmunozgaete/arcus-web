@@ -2,6 +2,7 @@ import React from 'react';
 import './index.scss';
 import { RouteComponentProps } from 'react-router-dom';
 import ChariotConsole from '../../lib/ChariotConsole';
+import ChildPage from "../../components/child-page";
 
 // import i18n from '../../lib/i18n';
 // import locales from './locales';
@@ -36,10 +37,9 @@ export default class RootPage extends React.Component<RouteComponentProps, IStat
 
 
   render() {
-   
-    return <div>
-      Hola
-    </div>
+    return <ChildPage>
+        Home Page
+    </ChildPage>
   }
 
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 /* Components */
 import BootLoader from './components/boot-loader';
@@ -14,12 +14,8 @@ import AuthenticationClient from './clients/AuthenticationClient';
 import SettingsClient from './clients/SettingsClient';
 
 /* Core Pages */
-
 import SignInPage from './pages/sign-in';
-
-/*import ApplyFlowPage from './pages/apply-flow';
-import OnBoardingPage from './pages/onboarding';
-*/
+import BpmReadPage from './pages/bpm/read';
 import RootHomePage from './pages/root-home';
 
 import IJwt from './models/IJwt';
@@ -94,12 +90,34 @@ export default class App extends React.Component<{}, PageState> {
 
 
     return <div>
-      <div>Header</div>
       <Router >
-        <Switch>
-          {/* CORE PATHS */}
+        <div>
+          HEADER
+        </div>
+        <div>
+          <div>
+            SIDEBAR
+            <li>
+              <ul>
+                <Link to="/">Home</Link>
+              </ul>
+              <ul >
+                <Link to="/bpm/create">Create</Link>
+              </ul>
+              <ul >
+                <Link to="/bpm/update/:id">Update</Link>
+              </ul>
+              <ul >
+                <Link to="/bpm">List</Link>
+              </ul>
+            </li>
+          </div>
+          <div>
 
-          {/* 
+            <Switch>
+              {/* CORE PATHS */}
+
+              {/* 
           <Route path="/about" exact={true}>
             <div> About</div>
           </Route>
@@ -107,10 +125,14 @@ export default class App extends React.Component<{}, PageState> {
             <div> Users</div>
           </Route>
           */}
-          <Route path="/" component={RootHomePage} exact={true} />
-        </Switch>
+              <Route path="/" component={RootHomePage} exact={true} />
+              <Route path="/bpm/create" component={BpmReadPage} exact={true} />
+            </Switch>
+
+          </div>
+        </div>
       </Router>
-    </div>;
+    </div>
   }
 }
 
