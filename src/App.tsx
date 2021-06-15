@@ -14,7 +14,7 @@ import SettingsClient from './clients/SettingsClient';
 
 /* Core Pages */
 
-import SignInPage, { onSignInCallbackHandler } from './pages/sign-in';
+import SignInPage from './pages/sign-in';
 
 /*import ApplyFlowPage from './pages/apply-flow';
 import OnBoardingPage from './pages/onboarding';

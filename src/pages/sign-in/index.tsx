@@ -4,17 +4,10 @@ import IJwt from "../../models/IJwt";
 import EventStreamer from "../../lib/EventStreamer";
 import i18n from '../../lib/i18n';
 import locales from './locales';
-import ChariotConsole from "../../lib/ChariotConsole";
-import UserClient, { IUser } from "../../clients/UserClient";
 import AuthenticationClient from "../../clients/AuthenticationClient";
-
 import GoogleIcon from './../../assets/media/google-icon-colored.png';
 
 const localize = i18n(locales);
-const chariot = ChariotConsole({ label: "signin-page" });
-
-
-export type onSignInCallbackHandler = (user: IUser) => void;
 
 interface IProps {
   onAuthenticated: (jwt: IJwt) => void
@@ -49,14 +42,13 @@ export default class SignInPage extends React.Component<IProps, IState> {
       expires_in: 1111,
       token_type: 'Bearer'
     }
-    this.props.onAuthenticated(true,jwt,()=>{})
+    this.onDeepLinkSSOCallbackHandler("google", jwt);
 
     return;
     */
     const ssoURL = process.env.REACT_APP_SSO_ENDPOINT;
     const clientId = process.env.REACT_APP_ARCUS_WEB_CLIENT_ID;
     const loginUrl = `${ssoURL}/oauth2/v2/authorize/gmail_oauth?response_type=token&client_id=${clientId}&scope=profile&prompt=consent`;
-
 
     const endpointURL = `${loginUrl}&redirect_uri=${ssoURL}/oauth2/v2/connect/oauth2_callback.html`;
     let loggedIn = false;
@@ -87,11 +79,10 @@ export default class SignInPage extends React.Component<IProps, IState> {
   }
 
   render() {
-    //const { version } = this.state;
+    const { version } = this.state;
 
     return <div className="signin-page">
-      Sign In
-
+      Sign In ({version})
 
       <button onClick={()=>this.onAutenticateHandler('google')}>
         <img src={GoogleIcon} alt="google"></img>&nbsp;
