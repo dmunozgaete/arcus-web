@@ -18,7 +18,7 @@ export default class BpmReadPage extends React.Component<IProps, IState> {
   render() {
     return <ChildPage>
       <div>
-      Bpm Read Page
+        {localize("PAGE_TITLE")}
       </div>
     </ChildPage>
   }
