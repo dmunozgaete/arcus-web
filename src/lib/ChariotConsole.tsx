@@ -60,6 +60,7 @@ class ChariotConsole {
   }
 }
 
-export default function (config: IConfig) {
+const callerFnc = function (config: IConfig) {
   return new ChariotConsole(config)
 };
+export default callerFnc

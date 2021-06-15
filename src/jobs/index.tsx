@@ -1,5 +1,6 @@
 import GpsTrackerJob from './GpsTrackerJob'
 
-export default {
+const Jobs = {
   GpsTrackerJob
 }
+export default Jobs
