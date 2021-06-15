@@ -6,6 +6,7 @@ import BootLoader from './components/boot-loader';
 
 /* Theme variables */
 import './assets/theme/variables.css';
+import './assets/theme/normalize.css';
 import './assets/theme/fonts.css';
 
 /* Clients */
