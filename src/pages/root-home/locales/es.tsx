@@ -1,3 +1,2 @@
-export default {
-  WELCOME_TITLE: "Hola"
-};
+const LOCALES = {};
+export default LOCALES;

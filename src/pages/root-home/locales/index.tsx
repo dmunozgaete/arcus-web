@@ -1,4 +1,5 @@
 import en from './en';
 import es from './es';
 
-export default {en,es}
+const LOCALIZATIONS = { en, es };
+export default LOCALIZATIONS

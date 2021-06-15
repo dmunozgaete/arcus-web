@@ -53,7 +53,7 @@ class Expressions {
    * @memberof Expressions
    */
   whenHasElevatePrivileges(callback: () => void): any {
-    const app_client_id = process.env.REACT_APP_WALMART_PAY_APP_CLIENT_ID;
+    const app_client_id = process.env.REACT_APP_ARCUS_WEB_CLIENT_ID;
     if (AuthenticationClient.isAuthenticated() && AuthenticationClient.hasRole([
       `${app_client_id}:owner`,
       `${app_client_id}:admin`,

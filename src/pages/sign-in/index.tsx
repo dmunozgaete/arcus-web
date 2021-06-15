@@ -2,13 +2,15 @@ import React from "react";
 import './index.scss';
 import IJwt from "../../models/IJwt";
 import EventStreamer from "../../lib/EventStreamer";
-//import i18n from '../../lib/i18n';
-//import locales from './locales';
+import i18n from '../../lib/i18n';
+import locales from './locales';
 import ChariotConsole from "../../lib/ChariotConsole";
 import UserClient, { IUser } from "../../clients/UserClient";
 import AuthenticationClient from "../../clients/AuthenticationClient";
 
-//const localize = i18n(locales);
+import GoogleIcon from './../../assets/media/google-icon-colored.png';
+
+const localize = i18n(locales);
 const chariot = ChariotConsole({ label: "signin-page" });
 
 
@@ -22,13 +24,11 @@ interface IState {
 }
 
 export default class SignInPage extends React.Component<IProps, IState> {
-  private swiper: any;
   state: IState = {
     version: "x.x.x"
   }
 
   onDeepLinkSSOCallbackHandler = async (jwt: IJwt) => {
-    this.swiper.slideTo(1);
     const authenticateUser = async (provider: string, jwt: IJwt, user: IUser) => {
       await AuthenticationClient.authenticate(provider, {
         "access_token": jwt.access_token,
@@ -36,9 +36,9 @@ export default class SignInPage extends React.Component<IProps, IState> {
         "token_type": jwt.token_type
       });
 
-      this.props.onAuthenticated(jwt,()=>{
+      this.props.onAuthenticated(jwt, () => {
         authenticateUser('google', jwt, user);
-      },user)
+      }, user)
     }
     try {
       const myInfo = await UserClient.me();
@@ -46,14 +46,6 @@ export default class SignInPage extends React.Component<IProps, IState> {
     } catch (ex) {
       chariot.debug(ex);
     }
-  }
-
-
-  onGetSwiperHandler = async (e: any) => {
-    this.swiper = e.target.swiper;
-    setTimeout(() => {
-      this.swiper.update();
-    }, 250);
   }
 
   onAutenticateHandler = async () => {
@@ -68,36 +60,36 @@ export default class SignInPage extends React.Component<IProps, IState> {
     return;
     */
     const ssoURL = process.env.REACT_APP_SSO_ENDPOINT;
-    const clientId = process.env.REACT_APP_WALMART_PAY_APP_CLIENT_ID;
+    const clientId = process.env.REACT_APP_ARCUS_WEB_CLIENT_ID;
     const loginUrl = `${ssoURL}/oauth2/v2/authorize/gmail_oauth?response_type=token&client_id=${clientId}&scope=profile&prompt=consent`;
 
-   
+
     const endpointURL = `${loginUrl}&redirect_uri=${ssoURL}/oauth2/v2/connect/oauth2_callback.html`;
-      let loggedIn = false;
-      const onPopupMessage = async (e: any) => {
-        if (e.origin === e.data.origin && !loggedIn) {
+    let loggedIn = false;
+    const onPopupMessage = async (e: any) => {
+      if (e.origin === e.data.origin && !loggedIn) {
 
-          // Simulate the deeplink process if we were in a mobile
-          EventStreamer.emit("DEEPLINK:SSO_CALLBACK", e.data)
+        // Simulate the deeplink process if we were in a mobile
+        EventStreamer.emit("DEEPLINK:SSO_CALLBACK", e.data)
 
-          loggedIn = true;
-        } else if (!loggedIn) {
-          console.error("FATAL AUTH ERROR:: Origin missmatch");
-        }
-      };
-      window.addEventListener("message", onPopupMessage);
+        loggedIn = true;
+      } else if (!loggedIn) {
+        console.error("FATAL AUTH ERROR:: Origin missmatch");
+      }
+    };
+    window.addEventListener("message", onPopupMessage);
 
-      const loginPopUp = window.open(endpointURL, "_blank",
-        "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=500,height=600"
-      );
+    const loginPopUp = window.open(endpointURL, "_blank",
+      "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=500,width=500,height=600"
+    );
 
-      // Only in web
-      const timer = setInterval(function () {
-        if (loginPopUp && loginPopUp.closed) {
-          clearInterval(timer);
-          window.removeEventListener("message", onPopupMessage);
-        }
-      }, 500);
+    // Only in web
+    const timer = setInterval(function () {
+      if (loginPopUp && loginPopUp.closed) {
+        clearInterval(timer);
+        window.removeEventListener("message", onPopupMessage);
+      }
+    }, 500);
   }
 
   render() {
@@ -105,6 +97,14 @@ export default class SignInPage extends React.Component<IProps, IState> {
 
     return <div className="signin-page">
       Sign In
+
+
+      <button onClick={this.onAutenticateHandler}>
+        <img src={GoogleIcon} alt="google"></img>&nbsp;
+        {localize('LOGIN_WITH_GOOGLE')}
+      </button>
+
+
       {/*
       <IonContent>
         <IonSlides onIonSlidesDidLoad={this.onGetSwiperHandler}>

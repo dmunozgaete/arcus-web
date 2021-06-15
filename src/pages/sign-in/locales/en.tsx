@@ -1,2 +1,2 @@
-export default {
-}
+const LOCALES = {};
+export default LOCALES;
