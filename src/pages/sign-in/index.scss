@@ -9,6 +9,8 @@
 
     // main frame
     > div {
+      max-width: 880px;
+      min-height: 480px;
       height: 50%;
       width: 80%;
       display: flex;
@@ -20,6 +22,8 @@
         &:nth-child(1) {
           width: 60%;
           background-image: url(../../assets/media/background-login.jpeg);
+          background-repeat: no-repeat;
+          background-position: top center;
           background-size: 100% auto;
         }
 
