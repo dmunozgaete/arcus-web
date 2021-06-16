@@ -5,26 +5,40 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import BootLoader from './components/boot-loader';
 
 /* Theme variables */
-import './assets/theme/variables.css';
-import './assets/theme/normalize.css';
-import './assets/theme/fonts.css';
+import './assets/theme/variables.less';
+import 'antd/dist/antd.less'
+import './App.less';
 
 /* Clients */
 import AuthenticationClient from './clients/AuthenticationClient';
 import SettingsClient from './clients/SettingsClient';
 
 /* Core Pages */
+
 import SignInPage from './pages/sign-in';
 import BpmReadPage from './pages/bpm/read';
 import RootHomePage from './pages/root-home';
 
 import IJwt from './models/IJwt';
 
+import { Layout, Menu } from 'antd';
+import {
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
+  PartitionOutlined,
+  VideoCameraOutlined,
+  UploadOutlined,
+} from '@ant-design/icons';
+
+const { Header, Sider, Content } = Layout;
+
+
 interface PageState {
   booting: boolean,
   authenticated: boolean,
   is_first_time: boolean,
   app_booting: boolean,
+  sidebar_collapsed: boolean
 }
 
 export default class App extends React.Component<{}, PageState> {
@@ -35,7 +49,9 @@ export default class App extends React.Component<{}, PageState> {
     is_first_time: false,
     // Just for pre-boot SettingsClient that we really need 
     // before other clients
-    app_booting: true
+    app_booting: true,
+
+    sidebar_collapsed: false
   }
 
   componentDidMount() {
@@ -48,7 +64,8 @@ export default class App extends React.Component<{}, PageState> {
 
     this.setState({
       app_booting: false,
-      is_first_time: SettingsClient.get("FIRST_TIME", true)
+      is_first_time: SettingsClient.get("FIRST_TIME", true),
+      sidebar_collapsed: SettingsClient.get("SIDEBAR_COLLAPSED", false)
     })
   }
 
@@ -72,6 +89,15 @@ export default class App extends React.Component<{}, PageState> {
     })
   }
 
+  onToggleSidebarHandler = () => {
+    const { sidebar_collapsed } = this.state;
+    this.setState({
+      sidebar_collapsed: !sidebar_collapsed
+    })
+
+    SettingsClient.set("SIDEBAR_COLLAPSED", !sidebar_collapsed)
+  }
+
 
   render() {
     const { app_booting, booting, authenticated } = this.state;
@@ -88,51 +114,49 @@ export default class App extends React.Component<{}, PageState> {
       return <SignInPage onAuthenticated={this.onAuthenticatedHandler} />
     }
 
-
-    return <div>
-      <Router >
-        <div>
-          HEADER
-        </div>
-        <div>
-          <div>
-            SIDEBAR
-            <li>
-              <ul>
-                <Link to="/">Home</Link>
-              </ul>
-              <ul >
-                <Link to="/bpm/create">Create</Link>
-              </ul>
-              <ul >
-                <Link to="/bpm/update/:id">Update</Link>
-              </ul>
-              <ul >
-                <Link to="/bpm">List</Link>
-              </ul>
-            </li>
+    const { sidebar_collapsed } = this.state;
+    return <Router>
+      <Layout className="parent-root">
+        <Sider width={230} trigger={null} collapsible collapsed={sidebar_collapsed}>
+          <div className="logo">
+            <div></div>
           </div>
-          <div>
+          <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
+            <Menu.Item key="1" icon={<PartitionOutlined />}>
+              <Link to="/bpm">List</Link>
+            </Menu.Item>
 
+            <Menu.Item key="2" icon={<VideoCameraOutlined />}>
+              <Link to="/bpm/create">Create</Link>
+            </Menu.Item>
+
+            <Menu.Item key="3" icon={<UploadOutlined />}>
+              <Link to="/bpm/update/123">Update</Link>
+            </Menu.Item>
+          </Menu>
+        </Sider>
+        <Layout >
+          <Header>
+            {React.createElement(sidebar_collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
+              onClick: this.onToggleSidebarHandler,
+            })}
+          </Header>
+          <Content>
             <Switch>
-              {/* CORE PATHS */}
-
-              {/* 
-          <Route path="/about" exact={true}>
-            <div> About</div>
-          </Route>
-          <Route path="/users" exact={true}>
-            <div> Users</div>
-          </Route>
-          */}
               <Route path="/" component={RootHomePage} exact={true} />
-              <Route path="/bpm/create" component={BpmReadPage} exact={true} />
+              <Route path="/bpm" component={BpmReadPage} exact={true} />
+              {/* 
+              <Route path="/bpm/create" component={BpmCreatePage} exact={true} />
+              <Route path="/bpm/update/123" component={BpmUpdatePage} exact={true} />
+              */}
             </Switch>
+          </Content>
+        </Layout>
+      </Layout>
 
-          </div>
-        </div>
-      </Router>
-    </div>
+
+    </Router>
+
   }
 }
 

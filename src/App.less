@@ -1,0 +1,36 @@
+@import '~antd/lib/style/themes/default.less';
+
+.parent-root {
+  height: 100%;
+
+  aside {
+    div.logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 64px;
+      align-content: center;
+      width: 100%;
+
+      >div {
+        background-image: url(./assets/media/app-logo.webp);
+        background-size: 90% auto;
+        background-position: center center;
+        background-repeat: no-repeat;
+        overflow: hidden;
+        border-radius: 50%;
+        height: 3em;
+        width: 3em;
+      }
+    }
+  }
+
+  header {
+    padding-left: 16px;
+    background-color: @body-background;
+  }
+
+  main {
+  }
+
+}

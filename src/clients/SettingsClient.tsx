@@ -8,7 +8,8 @@ interface IState {
 
 enum SETTINGS_ENUM {
   "LANGUAGE",
-  "FIRST_TIME"
+  "FIRST_TIME",
+  "SIDEBAR_COLLAPSED"
 }
 export type SettingTypes = keyof typeof SETTINGS_ENUM;
 

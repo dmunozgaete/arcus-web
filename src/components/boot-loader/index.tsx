@@ -1,5 +1,5 @@
 import React from 'react';
-import './index.scss';
+import './index.less';
 
 import AuthenticationClient from '../../clients/AuthenticationClient';
 import SettingsClient from '../../clients/SettingsClient';

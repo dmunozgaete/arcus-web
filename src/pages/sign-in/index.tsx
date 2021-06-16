@@ -1,5 +1,5 @@
 import React from "react";
-import './index.scss';
+import './index.less';
 import IJwt from "../../models/IJwt";
 import EventStreamer from "../../lib/EventStreamer";
 import i18n from '../../lib/i18n';

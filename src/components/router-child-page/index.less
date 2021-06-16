@@ -1,0 +1,69 @@
+@import '~antd/lib/style/themes/default.less';
+
+div.router-child-page {
+  height: 100%;
+
+  >div.ant-breadcrumb {
+    height: 56px;
+    padding-left: 24px;
+    display: flex;
+    align-items: center;
+  }
+
+  >div.child-frame {
+    height: calc(100% - 56px - 24px);
+    background-color: @body-background;
+    margin: 0px 24px 24px 24px;
+
+    >div.frame-header {
+      position: relative;
+
+      >div.ant-page-header {
+        >div.ant-page-header-heading {
+          >div.ant-page-header-heading-left {
+            >span.ant-page-header-heading-title {
+              border-right: 1px solid @text-color-secondary;
+              padding-right: 12px;
+              padding-left: 26px;
+            }
+
+            >span.ant-page-header-heading-sub-title {
+              font-style: italic;
+              font-size: 0.9em;
+            }
+          }
+        }
+
+        >div.ant-page-header-content {
+          position: absolute;
+          top: 16px;
+          font-size: 1.3em;
+          display: flex;
+          align-items: center;
+          height: 40px;
+          justify-content: center;
+          padding: 0px 2px;
+        }
+      }
+
+      // Button aside and button group
+      >div.pad {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0px 24px;
+        position: absolute;
+        right: 0px;
+        top: 0px;
+        height: 72px;
+      }
+    }
+
+    >div.frame-body {
+      width: 100%;
+      padding: 24px;
+    }
+  }
+
+
+}
