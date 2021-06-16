@@ -4,13 +4,13 @@ import RouterChildPage from "../../../components/router-child-page";
 import i18n from '../../../lib/i18n';
 import locales from './locales';
 import { Breadcrumb, PageHeader, Button } from 'antd';
-import { PartitionOutlined, PlusOutlined } from '@ant-design/icons';
+import { TeamOutlined, PlusOutlined } from '@ant-design/icons';
 
 const localize = i18n(locales);
 
 interface IProps { }
 interface IState { }
-export default class BpmReadPage extends React.Component<IProps, IState> {
+export default class UsersReadPage extends React.Component<IProps, IState> {
   state: IState = {}
 
   componentDidMount() {
@@ -26,7 +26,7 @@ export default class BpmReadPage extends React.Component<IProps, IState> {
       <RouterChildPage.Frame>
         <RouterChildPage.FrameHeader>
           <PageHeader title={localize("PAGE_TITLE")} subTitle={localize("PAGE_SUBTITLE")}>
-            <PartitionOutlined />
+            <TeamOutlined />
           </PageHeader>
           <div className="pad">
             <Button type="primary" size="middle" shape="round" icon={<PlusOutlined />}>
@@ -36,7 +36,7 @@ export default class BpmReadPage extends React.Component<IProps, IState> {
         </RouterChildPage.FrameHeader>
 
         <RouterChildPage.FrameBody>
-          sdasd
+          usuarios
         </RouterChildPage.FrameBody>
 
       </RouterChildPage.Frame>

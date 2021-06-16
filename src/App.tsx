@@ -17,6 +17,7 @@ import SettingsClient from './clients/SettingsClient';
 
 import SignInPage from './pages/sign-in';
 import BpmReadPage from './pages/bpm/read';
+import UsersReadPage from './pages/users/read';
 import RootHomePage from './pages/root-home';
 
 import IJwt from './models/IJwt';
@@ -26,8 +27,7 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   PartitionOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
+  TeamOutlined
 } from '@ant-design/icons';
 
 const { Header, Sider, Content } = Layout;
@@ -123,16 +123,13 @@ export default class App extends React.Component<{}, PageState> {
           </div>
           <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
             <Menu.Item key="1" icon={<PartitionOutlined />}>
-              <Link to="/bpm">List</Link>
+              <Link to="/bpm">Bpm</Link>
             </Menu.Item>
 
-            <Menu.Item key="2" icon={<VideoCameraOutlined />}>
-              <Link to="/bpm/create">Create</Link>
+            <Menu.Item key="2" icon={<TeamOutlined />}>
+              <Link to="/users">Usuarios</Link>
             </Menu.Item>
 
-            <Menu.Item key="3" icon={<UploadOutlined />}>
-              <Link to="/bpm/update/123">Update</Link>
-            </Menu.Item>
           </Menu>
         </Sider>
         <Layout >
@@ -145,6 +142,7 @@ export default class App extends React.Component<{}, PageState> {
             <Switch>
               <Route path="/" component={RootHomePage} exact={true} />
               <Route path="/bpm" component={BpmReadPage} exact={true} />
+              <Route path="/users" component={UsersReadPage} exact={true} />
               {/* 
               <Route path="/bpm/create" component={BpmCreatePage} exact={true} />
               <Route path="/bpm/update/123" component={BpmUpdatePage} exact={true} />
