@@ -34,9 +34,6 @@ export default class BpmUpdatePage extends React.Component<IProps, IState> {
 
   render() {
     const { data } = this.state;
-    if (!data) {
-      return <div>No Data</div>
-    }
 
     return <RouterChildPage className="bpm-update-page">
       <Breadcrumb>
@@ -57,7 +54,10 @@ export default class BpmUpdatePage extends React.Component<IProps, IState> {
         </RouterChildPage.FrameHeader>
 
         <RouterChildPage.FrameBody>
-          <BpmEditor flow={data.meta_data} />
+          {data ?
+            <BpmEditor flow={data.meta_data} /> :
+            <div>LOADING</div>
+          }
         </RouterChildPage.FrameBody>
 
       </RouterChildPage.Frame>
