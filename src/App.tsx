@@ -17,6 +17,7 @@ import SettingsClient from './clients/SettingsClient';
 
 import SignInPage from './pages/sign-in';
 import BpmReadPage from './pages/bpm/read';
+import BpmCreatePage from './pages/bpm/create';
 import UsersReadPage from './pages/users/read';
 import RootHomePage from './pages/root-home';
 
@@ -142,6 +143,7 @@ export default class App extends React.Component<{}, PageState> {
             <Switch>
               <Route path="/" component={RootHomePage} exact={true} />
               <Route path="/bpm" component={BpmReadPage} exact={true} />
+              <Route path="/bpm/create" component={BpmCreatePage} exact={true} />
               <Route path="/users" component={UsersReadPage} exact={true} />
               {/* 
               <Route path="/bpm/create" component={BpmCreatePage} exact={true} />

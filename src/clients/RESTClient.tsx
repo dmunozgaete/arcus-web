@@ -20,11 +20,11 @@ export interface ILink {
 }
 
 export interface IArrayRestResponse<TType> {
-  data: [TType],
+  data: TType[],
   offset: number,
   limit: number,
   total: number,
-  links: [ILink]
+  links: ILink[]
 }
 
 export default class RESTClient {

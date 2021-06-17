@@ -5,6 +5,12 @@ import AuthenticationClient from "../clients/AuthenticationClient";
  */
 class Expressions {
 
+  waitRandom(ms: number) {
+    const randomInt = Math.floor(Math.random() * ms) + 10
+    console.log(randomInt)
+    return new Promise(res => setTimeout(res, randomInt));
+  }
+
   /**
    * Execute a callback when the condition is True
    * @param {boolean} condition Expression to Check
