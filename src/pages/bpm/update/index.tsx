@@ -43,7 +43,7 @@ export default class BpmUpdatePage extends React.Component<IProps, IState> {
 
       <RouterChildPage.Frame>
         <RouterChildPage.FrameHeader>
-          <PageHeader title={localize("PAGE_TITLE")} subTitle={localize("PAGE_SUBTITLE")}>
+          <PageHeader title={data ? data.name : localize('PAGE_TITLE')} subTitle={localize("PAGE_SUBTITLE")}>
             <PartitionOutlined />
           </PageHeader>
           <div className="pad">

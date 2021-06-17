@@ -19,7 +19,7 @@ class BpmClient extends RESTClient implements WithBootedClient {
     return {
       data: [{
         id: "12321",
-        name: "Dummy BPM",
+        name: "Reposición de producto en gondola",
         author: "David Antonio Muñoz Gaete",
         created_at: new Date(),
         modified_at: new Date(),
@@ -38,21 +38,21 @@ class BpmClient extends RESTClient implements WithBootedClient {
 
     return {
       id: "12321",
-      name: "Dummy BPM",
+      name: "Reposición de producto en gondola",
       author: "David Antonio Muñoz Gaete",
       created_at: new Date(),
       modified_at: new Date(),
       meta_data: [
         {
           type: "STATE",
-          name: "Estado 1",
+          name: "Pendiente de Verificación de producto",
           x: 50,
           y: 400
         } as IBpmMetadataStateItem,
 
         {
           type: "STATE",
-          name: "Estado 2",
+          name: "Pendiente de revisión en bodega",
           x: 250,
           y: 50
         } as IBpmMetadataStateItem,
@@ -81,11 +81,11 @@ class BpmClient extends RESTClient implements WithBootedClient {
 
         {
           type: "TRANSITION",
-          name: "Transición 1",
-          from: "Estado 1",
-          to: "Estado 2"
+          name: "Verificar en bodega",
+          from: "Pendiente de Verificación de producto",
+          to: "Pendiente de revisión en bodega"
         } as IBpmMetadataTransitionItem,
-
+/*
         {
           type: "TRANSITION",
           name: "Transición 2",
@@ -106,7 +106,7 @@ class BpmClient extends RESTClient implements WithBootedClient {
           from: "Estado 3",
           to: "Estado 4"
         } as IBpmMetadataTransitionItem
-
+*/
 
       ],
       links: []

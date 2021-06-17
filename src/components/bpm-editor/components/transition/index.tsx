@@ -16,9 +16,22 @@ export default class BpmTransition extends React.Component<IProps, IState> {
 
   render() {
     const { from, to } = this.props;
-    return <Xarrow
-      start={from}
-      end={to}
-    />
+    const color = "black"
+    return <div className="bpm-transition-line">
+      <Xarrow
+        lineColor={color}
+        headColor={color}
+        tailColor={color}
+        tailShape={"circle"}
+        tailSize={2}
+        strokeWidth={2.5}
+        showTail={true}
+        start={from}
+        end={to}
+        label={<div className="bpm-transition-line-label">
+          {this.props.name}
+        </div>}
+      />
+    </div>
   }
 }
