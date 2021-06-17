@@ -7,7 +7,6 @@ class Expressions {
 
   waitRandom(ms: number) {
     const randomInt = Math.floor(Math.random() * ms) + 10
-    console.log(randomInt)
     return new Promise(res => setTimeout(res, randomInt));
   }
 

@@ -1,6 +1,5 @@
 import React from 'react';
 import './index.less';
-//import Xarrow from 'react-xarrows';
 import Draggable, { DraggableEvent, DraggableData } from 'react-draggable';
 import Expr from '../../../../lib/Expr';
 
@@ -40,13 +39,15 @@ export default class BpmState extends React.Component<IProps, IState> {
     return <Draggable
       onStop={this.onStopDragHandler}
       onStart={this.onStartDragHandler}
-      onDrag={this.onDragHandler}
-    >
-      <div className='bpm-state-box' id={this.props.name} style={{
-        position: "absolute",
-        top: x,
-        left: y
-      }}>
+      onDrag={this.onDragHandler}>
+      <div
+        className='bpm-state-box'
+        id={this.props.name}
+        style={{
+          position: "absolute",
+          top: x,
+          left: y
+        }}>
         {this.props.name}
       </div>
     </Draggable>

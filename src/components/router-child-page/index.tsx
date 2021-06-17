@@ -1,10 +1,5 @@
 import React from 'react';
 import './index.less';
-
-interface IProps { }
-interface IState { }
-
-
 class RouterChildFrameHeaderPage extends React.Component<IProps, IState> {
   render() {
     return <div className="frame-header">
@@ -29,9 +24,13 @@ class RouterChildFramePage extends React.Component<IProps, IState> {
   }
 }
 
+interface IProps {
+  className?: string
+}
+interface IState {}
 export default class RouterChildPage extends React.Component<IProps, IState> {
   render() {
-    return <div className="router-child-page">
+    return <div className={["router-child-page", this.props.className].join(" ")}>
       {this.props.children}
     </div>
   }

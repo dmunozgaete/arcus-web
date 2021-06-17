@@ -5,7 +5,7 @@ import RouterChildPage from "../../../components/router-child-page";
 import i18n from '../../../lib/i18n';
 import locales from './locales';
 import { Breadcrumb, PageHeader, Button, Table, Space } from 'antd';
-import { PartitionOutlined, PlusOutlined } from '@ant-design/icons';
+import { PartitionOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
 import BPMClient, { IBpmItem } from "../../../clients/BPMClient";
 import { IArrayRestResponse } from "../../../clients/RESTClient";
 import { RouteComponentProps } from "react-router-dom";
@@ -38,12 +38,14 @@ export default class BpmReadPage extends React.Component<IProps, IState> {
 
   render() {
     const { datasource } = this.state;
+    const EditClickHandler = async (data: IBpmItem) => {
+      this.props.history.push(`/bpm/update/${data.id}`);
+    }
     const columns = [
       {
         title: localize('TABLE_NAME'),
         dataIndex: 'name',
-        key: 'name',
-        render: (text: string) => <span>{text}</span>,
+        key: 'name'
       },
       {
         title: localize('TABLE_AUTHOR'),
@@ -55,22 +57,23 @@ export default class BpmReadPage extends React.Component<IProps, IState> {
         dataIndex: 'created_at',
         key: 'created_at',
         render: (date: Date) => {
-          console.log(date);
           return moment(date).fromNow();
         }
       },
       {
         title: '',
         key: 'action',
-        render: () => (
-          <Space size="middle">
-            Delete
+        render: (data: IBpmItem) => {
+          return <Space size="middle">
+            <Button onClick={() => EditClickHandler(data)} shape="round" icon={<EditOutlined />}>
+              {localize("TABLE_EDIT_BUTTON")}
+            </Button>
           </Space>
-        ),
+        },
       },
     ];
 
-    return <RouterChildPage>
+    return <RouterChildPage className="bpm-read-page">
       <Breadcrumb>
         <Breadcrumb.Item>{localize("BPM_BREADCUMB")}</Breadcrumb.Item>
         <Breadcrumb.Item>{localize("BPM_BREADCUMB_PAGE")}</Breadcrumb.Item>
@@ -89,7 +92,14 @@ export default class BpmReadPage extends React.Component<IProps, IState> {
         </RouterChildPage.FrameHeader>
 
         <RouterChildPage.FrameBody>
-          <Table loading={datasource ? false : true} sticky={true} rowKey="id" size="middle" columns={columns} dataSource={datasource ? datasource.data : []}></Table>
+          <Table
+            loading={datasource ? false : true}
+            sticky={true}
+            rowKey="id"
+            size="middle"
+            columns={columns}
+            dataSource={datasource ? datasource.data : []}
+          />
         </RouterChildPage.FrameBody>
 
       </RouterChildPage.Frame>

@@ -5,26 +5,40 @@ import i18n from '../../../lib/i18n';
 import locales from './locales';
 import { Breadcrumb, PageHeader, Button } from 'antd';
 import { PartitionOutlined, PlusOutlined } from '@ant-design/icons';
-import { IBpmItem } from "../../../clients/BPMClient";
+import BPMClient, { IBpmItem } from "../../../clients/BPMClient";
 import { RouteComponentProps, Link } from "react-router-dom";
 import BpmEditor from "../../../components/bpm-editor";
 
 const localize = i18n(locales);
 
-interface IProps extends RouteComponentProps { }
+interface IProps extends RouteComponentProps<{ id: string }> { }
 interface IState {
-  form?: IBpmItem
+  data?: IBpmItem
 }
 
-export default class BpmCreatePage extends React.Component<IProps, IState> {
+export default class BpmUpdatePage extends React.Component<IProps, IState> {
   state: IState = {
-    form: undefined
+    data: undefined
   }
 
-  componentDidMount() { }
+  componentDidMount() {
+    this.getById(this.props.match.params.id);
+  }
+
+  getById = async (id: string) => {
+    const data = await BPMClient.getById(id);
+    this.setState({
+      data
+    })
+  }
 
   render() {
-    return <RouterChildPage className="bpm-create-page">
+    const { data } = this.state;
+    if (!data) {
+      return <div>No Data</div>
+    }
+
+    return <RouterChildPage className="bpm-update-page">
       <Breadcrumb>
         <Breadcrumb.Item><Link to="/bpm">{localize("BPM_BREADCUMB")}</Link></Breadcrumb.Item>
         <Breadcrumb.Item>{localize("BPM_BREADCUMB_PAGE")}</Breadcrumb.Item>
@@ -43,7 +57,7 @@ export default class BpmCreatePage extends React.Component<IProps, IState> {
         </RouterChildPage.FrameHeader>
 
         <RouterChildPage.FrameBody>
-        <BpmEditor flow={[]} />
+          <BpmEditor flow={data.meta_data} />
         </RouterChildPage.FrameBody>
 
       </RouterChildPage.Frame>
