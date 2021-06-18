@@ -45,68 +45,38 @@ class BpmClient extends RESTClient implements WithBootedClient {
       meta_data: [
         {
           type: "STATE",
-          name: "Pendiente de Verificación de producto",
-          x: 50,
+          name: "Producto pendiente de revisión",
+          x: 400,
+          y: 80
+        } as IBpmMetadataStateItem,
+
+        {
+          type: "STATE",
+          name: "Producto encontrado",
+          x: 100,
           y: 400
         } as IBpmMetadataStateItem,
 
         {
           type: "STATE",
-          name: "Pendiente de revisión en bodega",
-          x: 250,
-          y: 50
-        } as IBpmMetadataStateItem,
-
-        {
-          type: "STATE",
-          name: "Estado 3",
-          x: 250,
+          name: "Producto no encontrado",
+          x: 700,
           y: 400
         } as IBpmMetadataStateItem,
-
-
-        {
-          type: "STATE",
-          name: "Estado 4",
-          x: 250,
-          y: 800
-        } as IBpmMetadataStateItem,
-
-        {
-          type: "STATE",
-          name: "Estado 5",
-          x: 480,
-          y: 400
-        } as IBpmMetadataStateItem,
-
+        
         {
           type: "TRANSITION",
-          name: "Verificar en bodega",
-          from: "Pendiente de Verificación de producto",
-          to: "Pendiente de revisión en bodega"
-        } as IBpmMetadataTransitionItem,
-/*
-        {
-          type: "TRANSITION",
-          name: "Transición 2",
-          from: "Estado 2",
-          to: "Estado 5"
+          name: "Revisión",
+          from: "Producto pendiente de revisión",
+          to: "Producto encontrado"
         } as IBpmMetadataTransitionItem,
 
         {
           type: "TRANSITION",
-          name: "Transición 3",
-          from: "Estado 5",
-          to: "Estado 3"
+          name: "Quebrar producto",
+          from: "Producto pendiente de revisión",
+          to: "Producto no encontrado"
         } as IBpmMetadataTransitionItem,
-
-        {
-          type: "TRANSITION",
-          name: "Transición 4",
-          from: "Estado 3",
-          to: "Estado 4"
-        } as IBpmMetadataTransitionItem
-*/
 
       ],
       links: []

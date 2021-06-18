@@ -56,6 +56,7 @@ export default class BootLoader extends React.Component<IProps, IState> {
 
     // Set the language
     const language = SettingsClient.get("LANGUAGE", "es");
+    console.log("language", language)
     setLocale(language);
 
     this.props.onLoadComplete({});

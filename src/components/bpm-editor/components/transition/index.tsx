@@ -5,7 +5,8 @@ import Xarrow from 'react-xarrows';
 interface IProps {
   from: string,
   to: string,
-  name: string
+  name: string,
+  id: string
 }
 interface IState { }
 
@@ -15,9 +16,12 @@ export default class BpmTransition extends React.Component<IProps, IState> {
   componentDidMount() { }
 
   render() {
-    const { from, to } = this.props;
+    const { from, to, id, name } = this.props;
     const color = "black"
-    return <div className="bpm-transition-line">
+    return <div
+      className="bpm-transition-line"
+      id={id}
+    >
       <Xarrow
         lineColor={color}
         headColor={color}
@@ -29,7 +33,7 @@ export default class BpmTransition extends React.Component<IProps, IState> {
         start={from}
         end={to}
         label={<div className="bpm-transition-line-label">
-          {this.props.name}
+          {name}
         </div>}
       />
     </div>
