@@ -46,36 +46,48 @@ class BpmClient extends RESTClient implements WithBootedClient {
         {
           type: "STATE",
           name: "Producto pendiente de revisión",
-          x: 400,
-          y: 80
+          elementId: "state_producto_pendiente_de_revisión",
+          editor_data: {
+            x: 400,
+            y: 80
+          }
         } as IBpmMetadataStateItem,
 
         {
           type: "STATE",
           name: "Producto encontrado",
-          x: 100,
-          y: 400
+          elementId: "state_producto_encontrado",
+          editor_data: {
+            x: 100,
+            y: 400
+          }
         } as IBpmMetadataStateItem,
 
         {
           type: "STATE",
           name: "Producto no encontrado",
-          x: 700,
-          y: 400
+          elementId: "state_producto_no_encontrado",
+          editor_data: {
+            x: 700,
+            y: 400,
+          }
+
         } as IBpmMetadataStateItem,
-        
+
         {
           type: "TRANSITION",
           name: "Revisión",
           from: "Producto pendiente de revisión",
-          to: "Producto encontrado"
+          to: "Producto encontrado",
+          elementId: "trx_revisión"
         } as IBpmMetadataTransitionItem,
 
         {
           type: "TRANSITION",
           name: "Quebrar producto",
           from: "Producto pendiente de revisión",
-          to: "Producto no encontrado"
+          to: "Producto no encontrado",
+          elementId: "trx_quebrar_producto"
         } as IBpmMetadataTransitionItem,
 
       ],
@@ -96,17 +108,24 @@ export interface IBpmItem {
 
 export interface IBpmMetadataItem {
   type: "STATE" | "TRANSITION",
-  name: string
+  name: string,
+  description?: string,
+  elementId: string
 }
 
 export interface IBpmMetadataStateItem extends IBpmMetadataItem {
-  x: number,
-  y: number
+  isStart: boolean,
+  isEnd: boolean,
+  editor_data: {
+    x: number,
+    y: number
+  }
 }
 
 export interface IBpmMetadataTransitionItem extends IBpmMetadataItem {
   from: string,
   to: string
+  roles: string[]
 }
 
 export default new BpmClient({
