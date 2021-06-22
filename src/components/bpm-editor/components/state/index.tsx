@@ -5,10 +5,13 @@ import Draggable, { DraggableEvent, DraggableData } from 'react-draggable';
 import Expr from '../../../../lib/Expr';
 import i18n from '../../../../lib/i18n';
 import locales from './../../locales';
+import { IBpmMetadataStateItem } from '../../../../clients/BPMClient';
 const localize = i18n(locales);
 
 interface IProps {
-  name: string
+  name: string,
+  start: boolean,
+  end: boolean,
   x: number,
   y: number,
   id: string
@@ -16,6 +19,7 @@ interface IProps {
   onDragStop?: (e: DraggableEvent, data: DraggableData) => {}
   onDrag?: (e: DraggableEvent, data: DraggableData) => {}
   onDragStart?: (e: DraggableEvent, data: DraggableData) => {}
+  onClick?: (elementId: string) => {}
 }
 interface IState {
 }
@@ -24,9 +28,8 @@ export default class BpmState extends React.Component<IProps, IState> {
   state: IState = {}
   nodeRef = React.createRef<any>()
 
-  constructor(props:IProps){
+  constructor(props: IProps) {
     super(props);
-    
   }
   componentDidMount() { }
 
@@ -45,16 +48,21 @@ export default class BpmState extends React.Component<IProps, IState> {
     Expr.whenTrue(onDragStart !== undefined, () => onDragStart!(e, data));
   }
 
+  onClickHandler = (): void => {
+    const { onClick, id } = this.props;
+    Expr.whenTrue(onClick !== undefined, () => onClick!(id));
+  }
+
   render() {
     const { x, y, id, name } = this.props;
-   
 
     return <Draggable
       onStop={this.onStopDragHandler}
       onStart={this.onStartDragHandler}
-      onDrag={this.onDragHandler}>
-
+      onDrag={this.onDragHandler}
+    >
       <div
+        onClick={this.onClickHandler}
         className='bpm-state-box'
         id={id}
         style={{

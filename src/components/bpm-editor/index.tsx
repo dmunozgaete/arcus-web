@@ -45,7 +45,6 @@ export default class BpmEditor extends React.Component<IProps, IState> {
         ...item
       })
     })
-console.log(stateAndIds);
 
     // Now Match all states with his transition's
     new_data.filter(x => x.type === "TRANSITION").forEach((item) => {
@@ -58,6 +57,20 @@ console.log(stateAndIds);
 
   onBpmDragStopHandler = async (e: DraggableEvent, data: DraggableData) => {
     this.forceUpdate()
+  }
+
+  onBpmStateClickHandler = async (elementIdForEdition: string) => {
+    const { new_data } = this.state;
+    const finded = new_data.find(e => e.elementId === elementIdForEdition);
+
+    this.setState({
+      drawer_is_open: true,
+      drawer_data: finded
+    });
+  }
+
+  onBpmTransitionClickHandler = async (data: IBpmMetadataTransitionItem) => {
+    console.log(data);
   }
 
   onBpmDragHandler = async (e: DraggableEvent, data: DraggableData) => {
@@ -95,11 +108,7 @@ console.log(stateAndIds);
 
   }
 
-  onChangeInEditorHandler = async (type: 'STATE' | 'TRANSITION', name: string, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    console.log(type)
-    console.log(name)
-    console.debug(e)
-
+  onFormEditItemHandler = async (name: string, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { new_data } = this.state;
     const finded = new_data.find(e => e.elementId === elementIdForEdition);
 
@@ -134,11 +143,14 @@ console.log(stateAndIds);
             const state = item as unknown as IBpmMetadataStateItem;
             return <State
               name={state.name}
+              start={state.isStart}
+              end={state.isEnd}
               id={state.elementId}
               key={state.elementId}
               x={state.editor_data.x}
               y={state.editor_data.y}
               onDrag={this.onBpmDragHandler}
+              onClick={this.onBpmStateClickHandler}
             />
           case "TRANSITION":
             const transition = item as unknown as IBpmMetadataTransitionItem;
@@ -148,6 +160,7 @@ console.log(stateAndIds);
               name={transition.name}
               from={transition.from}
               to={transition.to}
+              onClick={this.onBpmTransitionClickHandler}
             />
         }
       })}
@@ -185,7 +198,7 @@ console.log(stateAndIds);
                       <Input
                         placeholder={localize("STATE_NAME_PLACEHOLDER")}
                         value={state.name}
-                        onChange={(e) => this.onChangeInEditorHandler('STATE', 'name', e)}
+                        onChange={(e) => this.onFormEditItemHandler('name', e)}
                       />
                     </Form.Item>
                     <Form.Item label={`${localize("STATE_DESCRIPTION_LABEL")}:`}>
@@ -193,7 +206,7 @@ console.log(stateAndIds);
                         placeholder={localize("STATE_DESCRIPTION_PLACEHOLDER")}
                         value={state.description}
                         autoSize={{ minRows: 4, maxRows: 8 }}
-                        onChange={(e) => this.onChangeInEditorHandler('STATE', 'description', e)}
+                        onChange={(e) => this.onFormEditItemHandler('description', e)}
                       />
                     </Form.Item>
                   </Form>
