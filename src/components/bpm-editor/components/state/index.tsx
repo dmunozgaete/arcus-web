@@ -75,8 +75,9 @@ export default class BpmState extends React.Component<IProps, IState> {
           <div>
             {name}
           </div>
+
           <Popover placement="bottom" className="" content={(
-            <div>
+            <div onClick={(e) => e.stopPropagation()}>
               <Radio.Group>
                 <Radio.Button>
                   {localize("ADD_STATE_BUTTON_LABEL")}
@@ -90,7 +91,7 @@ export default class BpmState extends React.Component<IProps, IState> {
               </Radio.Group>
             </div>
           )}>
-            <div>
+            <div onClick={(e) => e.stopPropagation()}>
               {/* Action Popover Trigger */}
             </div>
           </Popover>
