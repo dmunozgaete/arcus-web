@@ -10,24 +10,27 @@ import Transition from './components/transition';
 import { IBpmMetadataItem, IBpmMetadataStateItem, IBpmMetadataTransitionItem } from '../../clients/BPMClient';
 import i18n from '../../lib/i18n';
 import locales from './locales';
+import BpmToolbox, { TOOLBOX_OPTIONS, TOOLBOX_OPTIONS_TYPE } from './components/toolbox';
 const localize = i18n(locales);
 
 interface IProps { flow: IBpmMetadataItem[] }
 interface IState {
   new_data: IBpmMetadataItem[],
   drawer_is_open: boolean,
-  drawer_data?: IBpmMetadataItem
+  drawer_data?: IBpmMetadataItem,
+  drawer_errors: string[]
 }
 
 const elementIdForEdition = "hooked_element_id_for_edition";
-const nameToId = (name: string): string => {
-  return name.replaceAll(" ", "_").toLocaleLowerCase();
+const nameToId = (item: IBpmMetadataItem): string => {
+  return `${item.type}|${item.name}`.replaceAll(" ", "_").toLocaleLowerCase();
 }
 
 export default class BpmEditor extends React.Component<IProps, IState> {
   containerRef = React.createRef<HTMLDivElement>();
   state: IState = {
     new_data: [],
+    drawer_errors: [],
     drawer_is_open: false,
     drawer_data: undefined
   }
@@ -39,7 +42,7 @@ export default class BpmEditor extends React.Component<IProps, IState> {
     const { new_data } = this.state;
     const stateAndIds: { [key: string]: string } = {}
     props.flow.forEach((item) => {
-      const id = nameToId(`${item.type}_${item.name}`);
+      const id = nameToId(item);
       stateAndIds[item.name] = id;
       new_data.push({
         ...item
@@ -48,22 +51,32 @@ export default class BpmEditor extends React.Component<IProps, IState> {
 
     // Now Match all states with his transition's
     new_data.filter(x => x.type === "TRANSITION").forEach((item) => {
-      const trx = item as unknown as IBpmMetadataTransitionItem;
+      const trx = item as IBpmMetadataTransitionItem;
 
       trx.from = stateAndIds[trx.from]
       trx.to = stateAndIds[trx.to]
     })
   }
 
+  getEditingItem = (): IBpmMetadataItem => {
+    const { new_data } = this.state;
+    const finded = new_data.find(e => e.elementId === elementIdForEdition);
+    return finded!;
+  }
+
   onBpmDragStopHandler = async (e: DraggableEvent, data: DraggableData) => {
+
     this.forceUpdate()
   }
 
-  onBpmStateClickHandler = async (elementIdForEdition: string) => {
+  onBpmStateClickHandler = async (elementIdToEdit: string) => {
+
     const { new_data } = this.state;
-    const finded = new_data.find(e => e.elementId === elementIdForEdition);
+    const finded = new_data.find(e => e.elementId === elementIdToEdit);
+    finded!.elementId = elementIdForEdition;
 
     this.setState({
+      new_data,
       drawer_is_open: true,
       drawer_data: finded
     });
@@ -77,25 +90,51 @@ export default class BpmEditor extends React.Component<IProps, IState> {
     this.forceUpdate()
   }
 
-  changeDrawerVisibility = async (isOpen: boolean) => {
+  onCloseDrawerHandler = async () => {
+    const { new_data } = this.state;
+
+    // STEP 1: Check first if we can close the drawer validating the "item"
+    const editingItem: IBpmMetadataItem = this.getEditingItem();
+    const errors: string[] = (() => {
+      switch (editingItem.type) {
+        case "STATE": return State.Validate(editingItem as IBpmMetadataStateItem);
+        case "TRANSITION": return State.Validate(editingItem as IBpmMetadataStateItem);
+        default: return [];
+      }
+    })();
+
+    if (errors.length > 0) {
+      // Cancel the closing, and show the errors
+      this.setState({
+        drawer_errors: errors
+      })
+      return;
+    }
+
+    // STEP 2: Change the id for the state to the final "name"
+    editingItem.elementId = nameToId(editingItem);
+
     this.setState({
-      drawer_is_open: isOpen
+      new_data,
+      drawer_data: undefined,
+      drawer_is_open: false
     })
   }
 
-  onAddNewStateHandler = (): void => {
+  onAddNewStateHandler = (isStart?: boolean, xPos?: number, yPos?: number): void => {
     const { new_data } = this.state;
+    const counter = new_data.filter(a => a.type == "STATE").length + 1;
     const x = this.containerRef.current ? this.containerRef.current.clientWidth / 2 - 70 : 70;
     const newState: IBpmMetadataStateItem = {
       elementId: elementIdForEdition,
       type: "STATE",
-      name: "State X",
+      name: `State ${counter}`,
       isEnd: false,
-      isStart: false,
+      isStart: isStart || false,
       description: "",
       editor_data: {
-        x: x,
-        y: 20
+        x: xPos || x,
+        y: yPos || 20
       }
     };
     new_data.push(newState);
@@ -103,25 +142,46 @@ export default class BpmEditor extends React.Component<IProps, IState> {
     this.setState({
       new_data,
       drawer_is_open: true,
-      drawer_data: newState
+      drawer_data: newState,
+      drawer_errors: []
     });
 
   }
 
   onFormEditItemHandler = async (name: string, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { new_data } = this.state;
-    const finded = new_data.find(e => e.elementId === elementIdForEdition);
+    const editingItem = this.getEditingItem();
 
-    (finded! as any)[name] = e.target.value;
+    (editingItem! as any)[name] = e.target.value;
     this.setState({
       new_data
     })
   }
 
+  onToolBoxClickHandler = async (action: TOOLBOX_OPTIONS) => {
+    console.log(action);
+    switch (action) {
+      case TOOLBOX_OPTIONS.ADD_NEW_STATE:
+        this.onAddNewStateHandler(false, 100, 100);
+        break
+      case TOOLBOX_OPTIONS.ADD_NEW_CONNECTION:
+        break
+    }
+  }
+
   render() {
-    const { new_data, drawer_is_open, drawer_data } = this.state;
+    const { new_data, drawer_is_open, drawer_data, drawer_errors } = this.state;
 
     return <div className='bpm-editor' ref={this.containerRef}>
+
+      {new_data.length > 0 ?
+        <BpmToolbox
+          x={10}
+          y={10}
+          onToolBoxClick={this.onToolBoxClickHandler}
+        /> : null
+      }
+
       {/* GET STARTED BUTTON */}
       {new_data.length === 0 ?
         <div className="get-started">
@@ -129,7 +189,7 @@ export default class BpmEditor extends React.Component<IProps, IState> {
             icon={<GatewayOutlined />}
             shape="round"
             size="large"
-            onClick={this.onAddNewStateHandler}
+            onClick={e => this.onAddNewStateHandler(true, undefined, 20)}
           >
             {localize("CREATE_MY_FIRST_STATE")}
           </Button>
@@ -140,7 +200,7 @@ export default class BpmEditor extends React.Component<IProps, IState> {
       {new_data.map((item: IBpmMetadataItem) => {
         switch (item.type) {
           case "STATE":
-            const state = item as unknown as IBpmMetadataStateItem;
+            const state = item as IBpmMetadataStateItem;
             return <State
               name={state.name}
               start={state.isStart}
@@ -153,7 +213,7 @@ export default class BpmEditor extends React.Component<IProps, IState> {
               onClick={this.onBpmStateClickHandler}
             />
           case "TRANSITION":
-            const transition = item as unknown as IBpmMetadataTransitionItem;
+            const transition = item as IBpmMetadataTransitionItem;
             return <Transition
               id={transition.elementId}
               key={uuidv4()}
@@ -171,7 +231,7 @@ export default class BpmEditor extends React.Component<IProps, IState> {
         maskStyle={{ backgroundColor: "#c4c4c473" }}
         width={350}
         closable={true}
-        onClose={x => this.changeDrawerVisibility(false)}
+        onClose={x => this.onCloseDrawerHandler()}
         visible={drawer_is_open}
         getContainer={false}
         style={{ position: 'absolute' }}
@@ -209,6 +269,8 @@ export default class BpmEditor extends React.Component<IProps, IState> {
                         onChange={(e) => this.onFormEditItemHandler('description', e)}
                       />
                     </Form.Item>
+
+                    <Form.ErrorList errors={drawer_errors}></Form.ErrorList>
                   </Form>
                 </>
             }
@@ -218,8 +280,3 @@ export default class BpmEditor extends React.Component<IProps, IState> {
     </div>
   }
 }
-/*
-export type BpmResource =
-  | { type: "STATE"; item: IBpmMetadataStateItem }
-  | { type: "TRANSITION"; item: IBpmMetadataTransitionItem }
-*/

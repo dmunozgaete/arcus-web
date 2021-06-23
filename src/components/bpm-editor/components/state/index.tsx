@@ -22,25 +22,42 @@ interface IProps {
   onClick?: (elementId: string) => {}
 }
 interface IState {
+  dragging: boolean
 }
 
 export default class BpmState extends React.Component<IProps, IState> {
-  state: IState = {}
+  state: IState = { dragging: false }
   nodeRef = React.createRef<any>()
+
+
+  static Validate(stateToValidate: IBpmMetadataStateItem): string[] {
+    const errors: string[] = []
+    return errors;
+  }
 
   constructor(props: IProps) {
     super(props);
   }
+
   componentDidMount() { }
 
   onDragHandler = (e: DraggableEvent, data: DraggableData): void => {
     const { onDrag } = this.props;
+    this.setState({ dragging: true })
     Expr.whenTrue(onDrag !== undefined, () => onDrag!(e, data));
   }
 
   onStopDragHandler = (e: DraggableEvent, data: DraggableData): void => {
-    const { onDragStop } = this.props;
-    Expr.whenTrue(onDragStop !== undefined, () => onDragStop!(e, data));
+    const { dragging } = this.state
+    this.setState({ dragging: false })
+
+    // Check if dragging or clicking
+    if (dragging) {
+      const { onDragStop } = this.props;
+      Expr.whenTrue(onDragStop !== undefined, () => onDragStop!(e, data));
+    } else {
+      this.onClickHandler();
+    }
   }
 
   onStartDragHandler = (e: DraggableEvent, data: DraggableData): void => {
@@ -53,6 +70,7 @@ export default class BpmState extends React.Component<IProps, IState> {
     Expr.whenTrue(onClick !== undefined, () => onClick!(id));
   }
 
+
   render() {
     const { x, y, id, name } = this.props;
 
@@ -62,7 +80,6 @@ export default class BpmState extends React.Component<IProps, IState> {
       onDrag={this.onDragHandler}
     >
       <div
-        onClick={this.onClickHandler}
         className='bpm-state-box'
         id={id}
         style={{
@@ -70,31 +87,10 @@ export default class BpmState extends React.Component<IProps, IState> {
           top: y,
           left: x
         }}>
-
         <div>
           <div>
             {name}
           </div>
-
-          <Popover placement="bottom" className="" content={(
-            <div onClick={(e) => e.stopPropagation()}>
-              <Radio.Group>
-                <Radio.Button>
-                  {localize("ADD_STATE_BUTTON_LABEL")}
-                </Radio.Button>
-                <Radio.Button>
-                  {localize("ADD_TRANSITION_BUTTON_LABEL")}
-                </Radio.Button>
-                <Radio.Button>
-                  {localize("REMOVE_STATE_BUTTON_LABEL")}
-                </Radio.Button>
-              </Radio.Group>
-            </div>
-          )}>
-            <div onClick={(e) => e.stopPropagation()}>
-              {/* Action Popover Trigger */}
-            </div>
-          </Popover>
         </div>
       </div>
     </Draggable>

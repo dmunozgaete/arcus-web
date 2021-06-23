@@ -17,6 +17,10 @@ interface IState { }
 export default class BpmTransition extends React.Component<IProps, IState> {
   state: IState = {}
 
+  static Validate(stateToValidate: IBpmMetadataTransitionItem): boolean {
+    throw new Error('not implemented');
+  }
+
   componentDidMount() { }
 
   onClickHandler = (): void => {
