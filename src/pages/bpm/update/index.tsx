@@ -5,15 +5,15 @@ import i18n from '../../../lib/i18n';
 import locales from './locales';
 import { Breadcrumb, PageHeader, Button } from 'antd';
 import { PartitionOutlined, PlusOutlined } from '@ant-design/icons';
-import BPMClient, { IBpmItem } from "../../../clients/BPMClient";
+import BPMClient, { IBpmFlow } from "../../../clients/BPMClient";
 import { RouteComponentProps, Link } from "react-router-dom";
-import BpmEditor from "../../../components/bpm-editor";
+import FlowEditor from "../../../components/flow-editor";
 
 const localize = i18n(locales);
 
 interface IProps extends RouteComponentProps<{ id: string }> { }
 interface IState {
-  data?: IBpmItem
+  data?: IBpmFlow
 }
 
 export default class BpmUpdatePage extends React.Component<IProps, IState> {
@@ -55,7 +55,10 @@ export default class BpmUpdatePage extends React.Component<IProps, IState> {
 
         <RouterChildPage.FrameBody>
           {data ?
-            <BpmEditor flow={data.meta_data} /> :
+            <FlowEditor
+              flow={data.meta_data}
+              onLoad={(i) => i.fitView()}
+            /> :
             <div>LOADING</div>
           }
         </RouterChildPage.FrameBody>

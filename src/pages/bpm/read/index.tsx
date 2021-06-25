@@ -6,7 +6,7 @@ import i18n from '../../../lib/i18n';
 import locales from './locales';
 import { Breadcrumb, PageHeader, Button, Table, Space } from 'antd';
 import { PartitionOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
-import BPMClient, { IBpmItem } from "../../../clients/BPMClient";
+import BPMClient, { IBpmFlow } from "../../../clients/BPMClient";
 import { IArrayRestResponse } from "../../../clients/RESTClient";
 import { RouteComponentProps } from "react-router-dom";
 
@@ -14,7 +14,7 @@ const localize = i18n(locales);
 
 interface IProps extends RouteComponentProps { }
 interface IState {
-  datasource?: IArrayRestResponse<IBpmItem>
+  datasource?: IArrayRestResponse<IBpmFlow>
 }
 export default class BpmReadPage extends React.Component<IProps, IState> {
   state: IState = {
@@ -38,7 +38,7 @@ export default class BpmReadPage extends React.Component<IProps, IState> {
 
   render() {
     const { datasource } = this.state;
-    const EditClickHandler = async (data: IBpmItem) => {
+    const EditClickHandler = async (data: IBpmFlow) => {
       this.props.history.push(`/bpm/update/${data.id}`);
     }
     const columns = [
@@ -63,7 +63,7 @@ export default class BpmReadPage extends React.Component<IProps, IState> {
       {
         title: '',
         key: 'action',
-        render: (data: IBpmItem) => {
+        render: (data: IBpmFlow) => {
           return <Space size="middle">
             <Button onClick={() => EditClickHandler(data)} shape="round" icon={<EditOutlined />}>
               {localize("TABLE_EDIT_BUTTON")}

@@ -13,7 +13,7 @@ class BpmClient extends RESTClient implements WithBootedClient {
 
   async boot() { }
 
-  async getAll(offset: number, limit: number): Promise<IArrayRestResponse<IBpmItem>> {
+  async getAll(offset: number, limit: number): Promise<IArrayRestResponse<IBpmFlow>> {
     await Expr.waitRandom(1500);
 
     return {
@@ -30,73 +30,93 @@ class BpmClient extends RESTClient implements WithBootedClient {
       limit: limit,
       total: 1,
       links: []
-    } as IArrayRestResponse<IBpmItem>
+    } as IArrayRestResponse<IBpmFlow>
   }
 
-  async getById(id: string): Promise<IBpmItem> {
-    await Expr.waitRandom(1500);
+  async getById(id: string): Promise<IBpmFlow> {
+    await Expr.waitRandom(500);
 
     return {
       id: "12321",
-      name: "Reposición de producto en gondola",
+      name: "Recepción de mercadería",
       author: "David Antonio Muñoz Gaete",
       created_at: new Date(),
       modified_at: new Date(),
       meta_data: [
         {
           type: "STATE",
-          name: "Producto pendiente de revisión",
-          elementId: "state_producto_pendiente_de_revisión",
+          label: "Pendiente de recepción",
+          start: true,
           editor_data: {
-            x: 400,
-            y: 80
+            x: 480,
+            y: 120
           }
         } as IBpmMetadataStateItem,
 
         {
           type: "STATE",
-          name: "Producto encontrado",
-          elementId: "state_producto_encontrado",
+          label: "Recepcionada",
+          end: true,
           editor_data: {
-            x: 100,
-            y: 400
+            x: 329,
+            y: 390
           }
         } as IBpmMetadataStateItem,
 
         {
           type: "STATE",
-          name: "Producto no encontrado",
-          elementId: "state_producto_no_encontrado",
+          label: "Rechazada",
+          end: true,
           editor_data: {
-            x: 700,
-            y: 400,
+            x: 540,
+            y: 390
           }
+        } as IBpmMetadataStateItem,
 
+        {
+          type: "STATE",
+          label: "Pendiente de Validación",
+          editor_data: {
+            x: 330,
+            y: 250
+          }
         } as IBpmMetadataStateItem,
 
         {
           type: "TRANSITION",
-          name: "Revisión",
-          from: "Producto pendiente de revisión",
-          to: "Producto encontrado",
-          elementId: "trx_revisión"
+          label: "Rechazar",
+          from: "Pendiente de recepción",
+          to: "Rechazada"
         } as IBpmMetadataTransitionItem,
 
         {
           type: "TRANSITION",
-          name: "Quebrar producto",
-          from: "Producto pendiente de revisión",
-          to: "Producto no encontrado",
-          elementId: "trx_quebrar_producto"
+          label: "Marcar para validación",
+          from: "Pendiente de recepción",
+          to: "Pendiente de Validación"
+        } as IBpmMetadataTransitionItem,
+
+        {
+          type: "TRANSITION",
+          label: "Recepcionar",
+          from: "Pendiente de Validación",
+          to: "Recepcionada"
+        } as IBpmMetadataTransitionItem,
+
+        {
+          type: "TRANSITION",
+          label: "Rechazar",
+          from: "Pendiente de Validación",
+          to: "Rechazada"
         } as IBpmMetadataTransitionItem,
 
       ],
       links: []
-    } as IBpmItem
+    } as IBpmFlow
   }
 }
 
-export interface IBpmItem {
+export interface IBpmFlow {
   id: string,
   name: string,
   author: string,
@@ -108,14 +128,13 @@ export interface IBpmItem {
 
 export interface IBpmMetadataItem {
   type: "STATE" | "TRANSITION",
-  name: string,
-  description?: string,
-  elementId: string
+  label: string,
+  description?: string
 }
 
 export interface IBpmMetadataStateItem extends IBpmMetadataItem {
-  isStart: boolean,
-  isEnd: boolean,
+  end: boolean,
+  start: boolean,
   editor_data: {
     x: number,
     y: number

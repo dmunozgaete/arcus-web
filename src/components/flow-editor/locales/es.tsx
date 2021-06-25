@@ -1,0 +1,12 @@
+const LOCALES = {
+  TOOLBOX_ADD_STATE_LABEL: "Agregar estado",
+  NEW_STATE_NAME_LABEL: "Estado",
+  NEW_TRANSITION_NAME_LABEL: "Transición",
+
+  // STATE EDITOR'S
+  STATE_EDITOR_SAVE_BUTTON_LABEL: "Guardar Estado",
+
+  // TRANSITION EDITOR'S
+  TRANSITION_EDITOR_SAVE_BUTTON_LABEL: "Guardar Transición"
+};
+export default LOCALES;

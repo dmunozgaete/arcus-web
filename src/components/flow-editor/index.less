@@ -1,0 +1,52 @@
+@import '~antd/lib/style/themes/default.less';
+
+.bpm-editor {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  background-color: #fff;
+  overflow: hidden;
+
+  .react-flow {
+    .react-flow__node {
+
+      // Start Node
+      &.react-flow__node-input {
+        border-color: @success-color;
+
+        .react-flow__handle {
+          background-color: @success-color;
+        }
+
+        &:hover {
+          box-shadow: 0 0 0 0.5px @success-color;
+        }
+      }
+
+
+      // End Node
+      &.react-flow__node-output {
+        border-color: @error-color;
+
+        .react-flow__handle {
+          background-color: @error-color;
+        }
+      }
+
+      // Handler's
+      .react-flow__handle {
+        width: 12px;
+        height: 12px;
+
+        &.react-flow__handle-bottom {
+          bottom: -6px;
+        }
+
+        &.react-flow__handle-top {
+          top: -6px;
+        }
+      }
+
+    }
+  }
+}

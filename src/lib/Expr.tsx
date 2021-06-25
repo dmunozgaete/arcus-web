@@ -25,6 +25,17 @@ class Expressions {
   }
 
   /**
+   * Execute a callback when the variable is not undefined
+   * @param {boolean} variable Expression to Check
+   * @param {()=>void} callback Function to execute if the condition is True
+   */
+  whenNotUndefined(variable: any, callback: () => void) {
+    if (variable !== undefined) {
+      callback();
+    }
+  }
+
+  /**
    ** Execute a callback when the condition is False
    * @param {boolean} condition Expression to Check
    * @param {()=>void} callback Function to execute if the condition is False
