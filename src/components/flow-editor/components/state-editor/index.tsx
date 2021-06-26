@@ -3,9 +3,13 @@ import './index.less';
 import i18n from './../../../../lib/i18n';
 import locales from './../../locales';
 import { Button } from 'antd'
-import { Drawer } from 'antd';
+import { UserOutlined, NumberOutlined, TeamOutlined } from '@ant-design/icons';
+import { Drawer, Form, Input, Checkbox, FormInstance, Popconfirm, Tooltip } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import { IBpmMetadataStateItem } from '../../../../clients/BPMClient';
 import Expr from '../../../../lib/Expr';
+import ActorSelector from '../../../actor-selector'
+import ActorClient, { IActor } from '../../../../clients/ActorClient';
 
 const localize = i18n(locales);
 
@@ -20,6 +24,7 @@ interface IState {
 }
 
 export default class StateEditor extends React.Component<IProps, IState> {
+  formRef = React.createRef<FormInstance>();
   state = {
     drawer_open: true,
     newState: Object.assign({}, this.props.state)
@@ -32,12 +37,16 @@ export default class StateEditor extends React.Component<IProps, IState> {
     })
   }
 
-  onSaveClickHandler = async () => {
+  onSaveClickHandler = async (values: IBpmMetadataStateItem) => {
     const { onChange, state } = this.props;
     const { newState } = this.state;
 
     Expr.whenNotUndefined(onChange, () => {
-      newState.label = "ASDASD";
+      Object.keys(values).forEach((name: string) => {
+        const key = name as keyof IBpmMetadataStateItem;
+        (newState as any)[key] = values[key];
+      })
+
       onChange!(state, newState);
     })
 
@@ -46,23 +55,86 @@ export default class StateEditor extends React.Component<IProps, IState> {
     });
   }
 
+  onCancelClickHandler = () => {
+    this.setState({
+      drawer_open: false
+    })
+  }
+
   render() {
-    const { drawer_open } = this.state;
-    return <div className="state-editor">
+    const { drawer_open, newState } = this.state;
+    return <div className="flow-state-editor">
       <Drawer
         placement="right"
         visible={drawer_open}
         afterVisibleChange={this.onAfterVisibleChangeHandler}
         closable={false}
         width={450}
+        title={localize('STATE_EDITOR_DRAWER_TITLE')}
+        footer={
+          <Form.Item >
+            <Button type="primary" onClick={() => this.formRef.current?.submit()} shape="round" size="large">
+              {localize('STATE_EDITOR_SAVE_BUTTON_LABEL')}
+            </Button>
+
+            <Popconfirm
+              title={localize('STATE_EDITOR_POPCONFIRM_TITLE')}
+              onConfirm={this.onCancelClickHandler}
+              okText={localize('STATE_EDITOR_POPCONFIRM_YES')}
+              cancelText={localize('STATE_EDITOR_POPCONFIRM_NO')}
+            >
+              <Button type="link" size="large">
+                {localize('STATE_EDITOR_CANCEL_BUTTON_LABEL')}
+              </Button>
+            </Popconfirm>
+          </Form.Item>
+        }
         getContainer={false}
         style={{ position: 'absolute' }}
       >
-        <p>State...</p>
+        {/* FORM */}
+        <Form name="basic" ref={this.formRef} layout="vertical" initialValues={newState} onFinish={this.onSaveClickHandler} onFinishFailed={() => {}}>
 
-        <Button onClick={this.onSaveClickHandler}>
-          {localize('STATE_EDITOR_SAVE_BUTTON_LABEL')}
-        </Button>
+          <Form.Item
+            label={localize('STATE_EDITOR_FORM_NAME_LABEL')}
+            name="label"
+            tooltip={{ title: localize('STATE_EDITOR_FORM_NAME_TOOLTIP'), icon: <InfoCircleOutlined /> }}
+            rules={[{ required: true, message: localize('STATE_EDITOR_FORM_NAME_REQUIRED_MESSAGE') }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item name="description" label={localize('STATE_EDITOR_FORM_DESCRIPTION_LABEL')}>
+            <Input.TextArea placeholder={localize('STATE_EDITOR_FORM_DESCRIPTION_PLACEHOLDER')} autoSize={{ maxRows: 8, minRows: 5 }} />
+          </Form.Item>
+
+          <Form.Item
+            name="actors"
+            valuePropName="actors"
+            label={localize('STATE_EDITOR_FORM_ACTORS_LABEL')}
+            tooltip={{ title: localize('STATE_EDITOR_FORM_ACTORS_TOOLTIP'), icon: <InfoCircleOutlined /> }}
+            rules={[{ required: true, message: localize('STATE_EDITOR_FORM_ACTORS_REQUIRED_MESSAGE') }]}
+          >
+
+            <ActorSelector
+              placeholder={localize('STATE_EDITOR_FORM_ACTORS_PLACEHOLDER')}
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="start"
+            valuePropName="checked"
+            style={{ marginBottom: 0 }}
+          >
+            <Checkbox disabled={true}>{localize('STATE_EDITOR_FORM_START_LABEL')}</Checkbox>
+          </Form.Item>
+
+          <Form.Item name="end" valuePropName="checked" >
+            <Checkbox disabled={newState.start ? true : false}>{localize('STATE_EDITOR_FORM_END_LABEL')}</Checkbox>
+          </Form.Item>
+
+        </Form>
+
       </Drawer>
     </div>
   }

@@ -1,5 +1,6 @@
 import Expr from '../lib/Expr';
 import WithBootedClient from '../lib/WithBootedClient';
+import { IActor } from './ActorClient';
 import RESTClient, { IArrayRestResponse, ILink } from './RESTClient';
 
 interface IConfig {
@@ -47,6 +48,16 @@ class BpmClient extends RESTClient implements WithBootedClient {
           type: "STATE",
           label: "Pendiente de recepción",
           start: true,
+          actors: [{
+            id: 'bf98f2dd-9be6-4da8-a11a-140caf4e9475',
+            name: 'Supermercados',
+            type: 'ROLE'
+          },
+          {
+            id: 'd4067489-a86c-4361-b979-e1c3a70912ec',
+            name: 'Juan Jose Diaz',
+            type: 'USER'
+          }],
           editor_data: {
             x: 480,
             y: 120
@@ -135,6 +146,7 @@ export interface IBpmMetadataItem {
 export interface IBpmMetadataStateItem extends IBpmMetadataItem {
   end: boolean,
   start: boolean,
+  actors: IActor[]
   editor_data: {
     x: number,
     y: number
@@ -144,7 +156,6 @@ export interface IBpmMetadataStateItem extends IBpmMetadataItem {
 export interface IBpmMetadataTransitionItem extends IBpmMetadataItem {
   from: string,
   to: string
-  roles: string[]
 }
 
 export default new BpmClient({

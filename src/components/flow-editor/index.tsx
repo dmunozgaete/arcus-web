@@ -77,7 +77,7 @@ export default class FlowEditor extends React.Component<IProps, IState> {
         const { elements } = this.state;
         const newMap = elements.map((el) => el);
         const label = `${localize('NEW_STATE_NAME_LABEL')} ${elements.length + 1}`;
-        
+
         newMap.push({
           'id': uuidv4(),
           'type': elements.length === 0 ? 'input' : 'default',
@@ -138,7 +138,6 @@ export default class FlowEditor extends React.Component<IProps, IState> {
 
   onChangeElementHandler = (params: onChangedElementTypes) => {
     const { elements } = this.state;
-    console.log(params.type, params.old, params.modified);
 
     switch (params.type) {
       case "STATE": {
@@ -148,7 +147,12 @@ export default class FlowEditor extends React.Component<IProps, IState> {
 
             // Override some "graphical changes ^^
             const ui = (elm as Edge<IBpmMetadataStateItem>);
-            ui.label = elm.data.label;
+            ui.label = params.modified.label;
+            ui.type = (() => {
+              if (params.modified.start) { return "input" }
+              if (params.modified.end) { return "output" }
+              return "default"
+            })()
           }
           return elm;
         });
