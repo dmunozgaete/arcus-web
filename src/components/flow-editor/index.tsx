@@ -1,7 +1,7 @@
 import React, { MouseEvent } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import './index.less';
-import { IBpmMetadataItem, IBpmMetadataStateItem, IBpmMetadataTransitionItem } from '../../clients/BPMClient';
+import { IFlowMetadata, IFlowMetadataState, IFlowMetadataTransition } from '../../clients/FlowClient';
 import i18n from '../../lib/i18n';
 import locales from './locales';
 import ToolBox, { TOOLBOX_ACTIONS } from './components/toolbox';
@@ -13,12 +13,12 @@ import TransitionEditor from './components/transition-editor';
 const localize = i18n(locales);
 
 interface IProps {
-  flow: IBpmMetadataItem[]
+  flow: IFlowMetadata[]
   onLoad?: (instance: OnLoadParams) => void
 }
 interface IState {
-  elements: FlowElement<IBpmMetadataItem>[],
-  drawer_element?: FlowElement<IBpmMetadataItem>
+  elements: FlowElement<IFlowMetadata>[],
+  drawer_element?: FlowElement<IFlowMetadata>
 }
 
 export default class FlowEditor extends React.Component<IProps, IState> {
@@ -34,7 +34,7 @@ export default class FlowEditor extends React.Component<IProps, IState> {
 
     const nameAndIds: { [key: string]: string } = {};
     const elements: FlowElement<any>[] = props.flow.filter(e => e.type === "STATE").map((elm) => {
-      const state = elm as IBpmMetadataStateItem;
+      const state = elm as IFlowMetadataState;
       const newId = uuidv4();
       nameAndIds[state.label] = newId;
       return {
@@ -50,11 +50,11 @@ export default class FlowEditor extends React.Component<IProps, IState> {
           'x': state.editor_data.x,
           'y': state.editor_data.y
         }
-      } as FlowElement<IBpmMetadataStateItem>
+      } as FlowElement<IFlowMetadataState>
     });
 
     props.flow.filter(e => e.type === "TRANSITION").forEach((elm) => {
-      const transition = elm as IBpmMetadataTransitionItem;
+      const transition = elm as IFlowMetadataTransition;
       elements.push({
         id: uuidv4(),
         "source": nameAndIds[transition.from],
@@ -63,7 +63,7 @@ export default class FlowEditor extends React.Component<IProps, IState> {
         "type": "default",
         "label": transition.label,
         'data': transition
-      } as FlowElement<IBpmMetadataTransitionItem>)
+      } as FlowElement<IFlowMetadataTransition>)
     });
 
     this.state.elements = elements;
@@ -146,7 +146,7 @@ export default class FlowEditor extends React.Component<IProps, IState> {
             elm.data = params.modified;
 
             // Override some "graphical changes ^^
-            const ui = (elm as Edge<IBpmMetadataStateItem>);
+            const ui = (elm as Edge<IFlowMetadataState>);
             ui.label = params.modified.label;
             ui.type = (() => {
               if (params.modified.start) { return "input" }
@@ -166,7 +166,7 @@ export default class FlowEditor extends React.Component<IProps, IState> {
             elm.data = params.modified;
 
             // Override some "graphical changes ^^
-            const ui = (elm as Edge<IBpmMetadataTransitionItem>);
+            const ui = (elm as Edge<IFlowMetadataTransition>);
             ui.label = elm.data.label;
           }
           return elm;
@@ -188,7 +188,7 @@ export default class FlowEditor extends React.Component<IProps, IState> {
     }
 
     return <ReactFlowProvider>
-      <div className='bpm-editor' ref={this.reactFlowWrapper}>
+      <div className='flow-editor' ref={this.reactFlowWrapper}>
         <ReactFlow
           elements={this.state.elements}
           onLoad={onLoad}
@@ -208,14 +208,14 @@ export default class FlowEditor extends React.Component<IProps, IState> {
         {/* STATE EDITOR */}
         {drawer_element && drawer_element.data?.type === "STATE" ?
           <StateEditor
-            state={drawer_element.data as IBpmMetadataStateItem}
+            state={drawer_element.data as IFlowMetadataState}
             onChange={(old, modified) => this.onChangeElementHandler({ type: "STATE", old, modified })}
             onClose={() => { this.setState({ drawer_element: undefined }) }}
           /> : null}
         {/* TRANSITION EDITOR */}
         {drawer_element && drawer_element.data?.type === "TRANSITION" ?
           <TransitionEditor
-            transition={drawer_element.data as IBpmMetadataTransitionItem}
+            transition={drawer_element.data as IFlowMetadataTransition}
             onChange={(old, modified) => this.onChangeElementHandler({ type: "TRANSITION", old, modified })}
             onClose={() => { this.setState({ drawer_element: undefined }) }}
           /> : null}
@@ -225,5 +225,5 @@ export default class FlowEditor extends React.Component<IProps, IState> {
 }
 
 export type onChangedElementTypes =
-  | { type: "STATE", old: IBpmMetadataStateItem, modified: IBpmMetadataStateItem }
-  | { type: "TRANSITION", old: IBpmMetadataTransitionItem, modified: IBpmMetadataTransitionItem }
+  | { type: "STATE", old: IFlowMetadataState, modified: IFlowMetadataState }
+  | { type: "TRANSITION", old: IFlowMetadataTransition, modified: IFlowMetadataTransition }

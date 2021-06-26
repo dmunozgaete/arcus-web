@@ -7,14 +7,14 @@ interface IConfig {
   baseURL: string
 }
 
-class BpmClient extends RESTClient implements WithBootedClient {
+class FlowClient extends RESTClient implements WithBootedClient {
   constructor(config: IConfig) {
     super({ baseURL: config.baseURL });
   }
 
   async boot() { }
 
-  async getAll(offset: number, limit: number): Promise<IArrayRestResponse<IBpmFlow>> {
+  async getAll(offset: number, limit: number): Promise<IArrayRestResponse<IFlow>> {
     await Expr.waitRandom(1500);
 
     return {
@@ -31,10 +31,10 @@ class BpmClient extends RESTClient implements WithBootedClient {
       limit: limit,
       total: 1,
       links: []
-    } as IArrayRestResponse<IBpmFlow>
+    } as IArrayRestResponse<IFlow>
   }
 
-  async getById(id: string): Promise<IBpmFlow> {
+  async getById(id: string): Promise<IFlow> {
     await Expr.waitRandom(500);
 
     return {
@@ -59,10 +59,10 @@ class BpmClient extends RESTClient implements WithBootedClient {
             type: 'USER'
           }],
           editor_data: {
-            x: 480,
+            x: 540,
             y: 120
           }
-        } as IBpmMetadataStateItem,
+        } as IFlowMetadataState,
 
         {
           type: "STATE",
@@ -72,7 +72,7 @@ class BpmClient extends RESTClient implements WithBootedClient {
             x: 329,
             y: 390
           }
-        } as IBpmMetadataStateItem,
+        } as IFlowMetadataState,
 
         {
           type: "STATE",
@@ -82,7 +82,7 @@ class BpmClient extends RESTClient implements WithBootedClient {
             x: 540,
             y: 390
           }
-        } as IBpmMetadataStateItem,
+        } as IFlowMetadataState,
 
         {
           type: "STATE",
@@ -91,59 +91,59 @@ class BpmClient extends RESTClient implements WithBootedClient {
             x: 330,
             y: 250
           }
-        } as IBpmMetadataStateItem,
+        } as IFlowMetadataState,
 
         {
           type: "TRANSITION",
           label: "Rechazar",
           from: "Pendiente de recepción",
           to: "Rechazada"
-        } as IBpmMetadataTransitionItem,
+        } as IFlowMetadataTransition,
 
         {
           type: "TRANSITION",
           label: "Marcar para validación",
           from: "Pendiente de recepción",
           to: "Pendiente de Validación"
-        } as IBpmMetadataTransitionItem,
+        } as IFlowMetadataTransition,
 
         {
           type: "TRANSITION",
           label: "Recepcionar",
           from: "Pendiente de Validación",
           to: "Recepcionada"
-        } as IBpmMetadataTransitionItem,
+        } as IFlowMetadataTransition,
 
         {
           type: "TRANSITION",
           label: "Rechazar",
           from: "Pendiente de Validación",
           to: "Rechazada"
-        } as IBpmMetadataTransitionItem,
+        } as IFlowMetadataTransition,
 
       ],
       links: []
-    } as IBpmFlow
+    } as IFlow
   }
 }
 
-export interface IBpmFlow {
+export interface IFlow {
   id: string,
   name: string,
   author: string,
   created_at: Date,
   modified_at: Date,
-  meta_data: IBpmMetadataItem[]
+  meta_data: IFlowMetadata[]
   links?: ILink[]
 }
 
-export interface IBpmMetadataItem {
+export interface IFlowMetadata {
   type: "STATE" | "TRANSITION",
   label: string,
   description?: string
 }
 
-export interface IBpmMetadataStateItem extends IBpmMetadataItem {
+export interface IFlowMetadataState extends IFlowMetadata {
   end: boolean,
   start: boolean,
   actors: IActor[]
@@ -153,11 +153,11 @@ export interface IBpmMetadataStateItem extends IBpmMetadataItem {
   }
 }
 
-export interface IBpmMetadataTransitionItem extends IBpmMetadataItem {
+export interface IFlowMetadataTransition extends IFlowMetadata {
   from: string,
   to: string
 }
 
-export default new BpmClient({
+export default new FlowClient({
   baseURL: process.env.REACT_APP_API_ENDPOINT!
 });

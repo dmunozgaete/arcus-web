@@ -3,24 +3,22 @@ import './index.less';
 import i18n from './../../../../lib/i18n';
 import locales from './../../locales';
 import { Button } from 'antd'
-import { UserOutlined, NumberOutlined, TeamOutlined } from '@ant-design/icons';
-import { Drawer, Form, Input, Checkbox, FormInstance, Popconfirm, Tooltip } from 'antd';
+import { Drawer, Form, Input, Checkbox, FormInstance, Popconfirm } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { IBpmMetadataStateItem } from '../../../../clients/BPMClient';
+import { IFlowMetadataState } from '../../../../clients/FlowClient';
 import Expr from '../../../../lib/Expr';
 import ActorSelector from '../../../actor-selector'
-import ActorClient, { IActor } from '../../../../clients/ActorClient';
 
 const localize = i18n(locales);
 
 interface IProps {
-  state: IBpmMetadataStateItem
+  state: IFlowMetadataState
   onClose: () => void
-  onChange?: (oldState: IBpmMetadataStateItem, newState: IBpmMetadataStateItem) => void
+  onChange?: (oldState: IFlowMetadataState, newState: IFlowMetadataState) => void
 }
 interface IState {
   drawer_open: boolean,
-  newState: IBpmMetadataStateItem
+  newState: IFlowMetadataState
 }
 
 export default class StateEditor extends React.Component<IProps, IState> {
@@ -37,13 +35,13 @@ export default class StateEditor extends React.Component<IProps, IState> {
     })
   }
 
-  onSaveClickHandler = async (values: IBpmMetadataStateItem) => {
+  onSaveClickHandler = async (values: IFlowMetadataState) => {
     const { onChange, state } = this.props;
     const { newState } = this.state;
 
     Expr.whenNotUndefined(onChange, () => {
       Object.keys(values).forEach((name: string) => {
-        const key = name as keyof IBpmMetadataStateItem;
+        const key = name as keyof IFlowMetadataState;
         (newState as any)[key] = values[key];
       })
 

@@ -19,8 +19,8 @@ export default class UsersReadPage extends React.Component<IProps, IState> {
   render() {
     return <RouterChildPage>
       <Breadcrumb>
-        <Breadcrumb.Item>{localize("BPM_BREADCUMB")}</Breadcrumb.Item>
-        <Breadcrumb.Item>{localize("BPM_BREADCUMB_PAGE")}</Breadcrumb.Item>
+        <Breadcrumb.Item>{localize("FLOW_BREADCUMB")}</Breadcrumb.Item>
+        <Breadcrumb.Item>{localize("FLOW_BREADCUMB_PAGE")}</Breadcrumb.Item>
       </Breadcrumb>
 
       <RouterChildPage.Frame>

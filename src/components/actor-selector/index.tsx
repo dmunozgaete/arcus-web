@@ -1,5 +1,5 @@
 import React from 'react';
-import { Select, Spin, Tag, TagProps } from 'antd';
+import { Select, Spin, Tag } from 'antd';
 import { TeamOutlined, NumberOutlined, UserOutlined } from '@ant-design/icons';
 import { debounce, filter } from 'lodash';
 import ActorClient, { IActor } from '../../clients/ActorClient';
@@ -25,10 +25,6 @@ export default class ActorSelector extends React.Component<IProps, IState> {
     data: [],
     actors: this.props.actors || [],
     fetching: false
-  }
-
-  constructor(props: IProps) {
-    super(props);
   }
 
   fetchActors = debounce(async (terms: string): Promise<void> => {
@@ -76,9 +72,9 @@ export default class ActorSelector extends React.Component<IProps, IState> {
     Expr.whenNotUndefined(onChange, () => {
       onChange!(newActors)
     })
-    
+
     this.setState({
-      actors:newActors,
+      actors: newActors,
       data: [],
       fetching: false,
     });
@@ -140,7 +136,14 @@ export default class ActorSelector extends React.Component<IProps, IState> {
           </Tag>
         }}
       >
-        {data.map((d: IActor) => <Option key={d.id} value={d.id}>{d.name}</Option>)}
+        {data.map((actor: IActor) => {
+          return <Option key={actor.id} value={actor.id}>
+            {actor.type === "ROLE" ? <TeamOutlined /> : null}
+            {actor.type === "TAG" ? <NumberOutlined /> : null}
+            {actor.type === "USER" ? <UserOutlined /> : null}
+            &nbsp;{actor.name}
+          </Option>
+        })}
       </Select>
     );
   }

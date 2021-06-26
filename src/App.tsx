@@ -17,9 +17,9 @@ import SettingsClient from './clients/SettingsClient';
 
 import SignInPage from './pages/sign-in';
 
-import BpmReadPage from './pages/bpm/read';
-import BpmCreatePage from './pages/bpm/create';
-import BpmUpdatePage from './pages/bpm/update';
+import FlowReadPage from './pages/flows/read';
+import FlowCreatePage from './pages/flows/create';
+import FlowUpdatePage from './pages/flows/update';
 
 import UsersReadPage from './pages/users/read';
 import RootHomePage from './pages/root-home';
@@ -127,7 +127,7 @@ export default class App extends React.Component<{}, PageState> {
           </div>
           <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
             <Menu.Item key="1" icon={<PartitionOutlined />}>
-              <Link to="/bpm">Bpm</Link>
+              <Link to="/flows">Flow</Link>
             </Menu.Item>
 
             <Menu.Item key="2" icon={<TeamOutlined />}>
@@ -145,9 +145,9 @@ export default class App extends React.Component<{}, PageState> {
           <Content>
             <Switch>
               <Route path="/" component={RootHomePage} exact={true} />
-              <Route path="/bpm" component={BpmReadPage} exact={true} />
-              <Route path="/bpm/create" component={BpmCreatePage} exact={true} />
-              <Route path="/bpm/update/:id" component={BpmUpdatePage} exact={true} />
+              <Route path="/flows" component={FlowReadPage} exact={true} />
+              <Route path="/flows/create" component={FlowCreatePage} exact={true} />
+              <Route path="/flows/update/:id" component={FlowUpdatePage} exact={true} />
               <Route path="/users" component={UsersReadPage} exact={true} />
             </Switch>
           </Content>

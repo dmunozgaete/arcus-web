@@ -6,7 +6,7 @@ import i18n from '../../../lib/i18n';
 import locales from './locales';
 import { Breadcrumb, PageHeader, Button, Table, Space } from 'antd';
 import { PartitionOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
-import BPMClient, { IBpmFlow } from "../../../clients/BPMClient";
+import FlowClient, { IFlow } from "../../../clients/FlowClient";
 import { IArrayRestResponse } from "../../../clients/RESTClient";
 import { RouteComponentProps } from "react-router-dom";
 
@@ -14,9 +14,9 @@ const localize = i18n(locales);
 
 interface IProps extends RouteComponentProps { }
 interface IState {
-  datasource?: IArrayRestResponse<IBpmFlow>
+  datasource?: IArrayRestResponse<IFlow>
 }
-export default class BpmReadPage extends React.Component<IProps, IState> {
+export default class FlowReadPage extends React.Component<IProps, IState> {
   state: IState = {
     datasource: undefined
   }
@@ -26,20 +26,20 @@ export default class BpmReadPage extends React.Component<IProps, IState> {
   }
 
   getAll = async (offset: number, limit: number) => {
-    const datasource = await BPMClient.getAll(offset, limit);
+    const datasource = await FlowClient.getAll(offset, limit);
     this.setState({
       datasource
     })
   }
 
   onPrimaryButtonClickHandler = async () => {
-    this.props.history.push("/bpm/create")
+    this.props.history.push("/flows/create")
   }
 
   render() {
     const { datasource } = this.state;
-    const EditClickHandler = async (data: IBpmFlow) => {
-      this.props.history.push(`/bpm/update/${data.id}`);
+    const EditClickHandler = async (data: IFlow) => {
+      this.props.history.push(`/flows/update/${data.id}`);
     }
     const columns = [
       {
@@ -63,7 +63,7 @@ export default class BpmReadPage extends React.Component<IProps, IState> {
       {
         title: '',
         key: 'action',
-        render: (data: IBpmFlow) => {
+        render: (data: IFlow) => {
           return <Space size="middle">
             <Button onClick={() => EditClickHandler(data)} shape="round" icon={<EditOutlined />}>
               {localize("TABLE_EDIT_BUTTON")}
@@ -73,10 +73,10 @@ export default class BpmReadPage extends React.Component<IProps, IState> {
       },
     ];
 
-    return <RouterChildPage className="bpm-read-page">
+    return <RouterChildPage className="flow-read-page">
       <Breadcrumb>
-        <Breadcrumb.Item>{localize("BPM_BREADCUMB")}</Breadcrumb.Item>
-        <Breadcrumb.Item>{localize("BPM_BREADCUMB_PAGE")}</Breadcrumb.Item>
+        <Breadcrumb.Item>{localize("FLOW_BREADCUMB")}</Breadcrumb.Item>
+        <Breadcrumb.Item>{localize("FLOW_BREADCUMB_PAGE")}</Breadcrumb.Item>
       </Breadcrumb>
 
       <RouterChildPage.Frame>

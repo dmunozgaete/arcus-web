@@ -3,20 +3,20 @@ import './index.less';
 import i18n from './../../../../lib/i18n';
 import locales from './../../locales';
 import { Button } from 'antd'
-import { Drawer, Form, Input, Checkbox, FormInstance, Popconfirm } from 'antd';
-import { IBpmMetadataStateItem, IBpmMetadataTransitionItem } from '../../../../clients/BPMClient';
+import { Drawer, Form, Input, FormInstance, Popconfirm } from 'antd';
+import { IFlowMetadataState, IFlowMetadataTransition } from '../../../../clients/FlowClient';
 import Expr from '../../../../lib/Expr';
 
 const localize = i18n(locales);
 
 interface IProps {
-  transition: IBpmMetadataTransitionItem
+  transition: IFlowMetadataTransition
   onClose: () => void
-  onChange?: (oldState: IBpmMetadataTransitionItem, newTransition: IBpmMetadataTransitionItem) => void
+  onChange?: (oldState: IFlowMetadataTransition, newTransition: IFlowMetadataTransition) => void
 }
 interface IState {
   drawer_open: boolean,
-  newTransition: IBpmMetadataTransitionItem
+  newTransition: IFlowMetadataTransition
 }
 
 export default class TransitionEditor extends React.Component<IProps, IState> {
@@ -33,13 +33,13 @@ export default class TransitionEditor extends React.Component<IProps, IState> {
     })
   }
 
-  onSaveClickHandler = async (values: IBpmMetadataStateItem) => {
+  onSaveClickHandler = async (values: IFlowMetadataState) => {
     const { onChange, transition } = this.props;
     const { newTransition } = this.state;
 
     Expr.whenNotUndefined(onChange, () => {
       Object.keys(values).forEach((name: string) => {
-        const key = name as keyof IBpmMetadataStateItem;
+        const key = name as keyof IFlowMetadataState;
         (newTransition as any)[key] = values[key];
       })
 
