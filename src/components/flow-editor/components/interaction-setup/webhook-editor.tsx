@@ -12,16 +12,17 @@ interface IProps {
   onSetupCompleted: (webhook: IWebhookInteraction | undefined, newWebhook: IWebhookInteraction) => void
   onCancel: () => void
   onBack: () => void
-  data?: IWebhookInteraction
+  webhook?: IWebhookInteraction
 }
+
 interface IState {
-  newData?: IWebhookInteraction
+  newWebhook?: IWebhookInteraction
 }
 
 export default class WebhookEditor extends React.Component<IProps, IState> {
   formRef = React.createRef<FormInstance>();
   state: IState = {
-    newData: this.props.data ? Object.assign({}, this.props.data) : undefined
+    newWebhook: this.props.webhook ? Object.assign({}, this.props.webhook) : undefined
   }
 
   onCancelClickHandler = async () => {
@@ -35,28 +36,28 @@ export default class WebhookEditor extends React.Component<IProps, IState> {
   }
 
   onSaveClickHandler = async (values: IWebhookInteraction) => {
-    const { onSetupCompleted, data } = this.props;
-    const { newData } = this.state;
+    const { onSetupCompleted, webhook } = this.props;
+    const newData = this.state.newWebhook || {};
 
     Object.keys(values).forEach((name: string) => {
       const key = name as keyof IWebhookInteraction;
       (newData as any)[key] = values[key];
     })
-    
-    onSetupCompleted(data, newData!);
+
+    onSetupCompleted(webhook, newData! as IWebhookInteraction);
   }
 
   render() {
-    const { newData } = this.state;
-    return <div className="flow-webhook-editor">
+    const { newWebhook } = this.state;
+    return <>
       <PageHeader
-        onBack={newData ? undefined : this.onBackClickHandler}
+        onBack={newWebhook ? undefined : this.onBackClickHandler}
         title={localize('INTERACTION_WEBHOOK_TITLE')}
         subTitle={localize('INTERACTION_WEBHOOK_DESCRIPTION')}
       />
 
       {/* FORM */}
-      <Form style={{ position: "relative", height: "calc(100% - 136px)", overflowX: "scroll" }} name={`webhook_data_${(new Date()).getTime()}`} ref={this.formRef} layout="vertical" initialValues={newData} onFinish={this.onSaveClickHandler} onFinishFailed={() => { }}>
+      <Form style={{ position: "relative", height: "calc(100% - 136px)", overflowX: "scroll" }} name={`webhook_data_${(new Date()).getTime()}`} ref={this.formRef} layout="vertical" initialValues={newWebhook} onFinish={this.onSaveClickHandler} onFinishFailed={() => { }}>
 
         <Form.Item
           label={localize('WEBHOOK_EDITOR_FORM_NAME_LABEL')}
@@ -130,15 +131,11 @@ export default class WebhookEditor extends React.Component<IProps, IState> {
           name="disabled"
           label={localize('WEBHOOK_EDITOR_FORM_DISABLED_LABEL')}
           valuePropName="checked"
-
         >
           <Switch defaultChecked={false}></Switch>
         </Form.Item>
 
-        <br />
-        <br />
-        <br />
-        <br />
+
       </Form>
 
       <div className="ant-drawer-footer">
@@ -155,6 +152,6 @@ export default class WebhookEditor extends React.Component<IProps, IState> {
       </div>
 
 
-    </div>
+    </>
   }
 }

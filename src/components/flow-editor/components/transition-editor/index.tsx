@@ -83,6 +83,28 @@ export default class TransitionEditor extends React.Component<IProps, IState> {
     })
   }
 
+  onInteractionSetupCompletedHandler = async (interaction: ITransitionInteraction | undefined, newInteraction: ITransitionInteraction) => {
+    const { newTransition } = this.state;
+
+    if (interaction) {
+      // Update current interaction
+      newTransition.interactions = newTransition.interactions.map((elm) => {
+        if (elm.sequence === interaction.sequence) {
+          return newInteraction;
+        }
+        return elm;
+      });
+    } else {
+      newTransition.interactions.push(newInteraction);
+    }
+
+    this.setState({
+      newTransition,
+      child_drawer_open: false,
+      child_drawer_data: undefined
+    })
+  }
+
 
   render() {
     const { drawer_open, newTransition, child_drawer_open, child_drawer_data } = this.state;
@@ -195,13 +217,13 @@ export default class TransitionEditor extends React.Component<IProps, IState> {
           getContainer={() => {
             return (document.getElementsByClassName('flow-transition-editor')[0]) as HTMLElement;
           }}
-          style={{ position: 'absolute' }}
+          style={{ position: 'absolute', paddingTop: 0 }}
           visible={child_drawer_open}
         >
 
           <InteractionSetup
             interaction={child_drawer_data}
-            onSetupCompleted={this.onCloseChildDrawerHandler}
+            onSetupCompleted={this.onInteractionSetupCompletedHandler}
             onCancel={this.onCloseChildDrawerHandler}
           ></InteractionSetup>
         </Drawer>

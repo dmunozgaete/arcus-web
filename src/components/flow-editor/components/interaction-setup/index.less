@@ -1,92 +1,56 @@
 @import '~antd/lib/style/themes/default.less';
 
-.flow-interaction-editor {
+.flow-interaction-setup {
   height: 100%;
 
-  .ant-carousel {
-    height: 100%;
+  div.ant-page-header {
+    padding: 0px 0px 16px 0px;
 
-    .slick-slider {
-      height: 100%;
+    >div.ant-page-header-heading {
+      >div.ant-page-header-heading-left {
+        >span.ant-page-header-heading-title {
+          border-right: 1px solid @text-color-secondary;
+          padding-right: 12px;
+        }
 
-      .slick-list {
-        height: 100%;
-
-        .slick-track {
-          height: 100%;
-
-          >div {
-            height: 100%;
-
-            >div {
-              height: 100%;
-
-              div.interaction-page {
-                height: 100%;
-
-                >div.flow-webhook-editor {
-                  height: 100%;
-                  position: relative;
-
-                  div.ant-drawer-footer {
-                    background-color: #fff;
-                    position: absolute;
-                    padding-left: 0px;
-                    bottom: 0px;
-                    width: 100%;
-                  }
-                }
-              }
-            }
-          }
+        >span.ant-page-header-heading-sub-title {
+          font-style: italic;
+          font-size: 0.9em;
         }
       }
     }
 
-    div.interaction-page {
+  }
 
-      div.ant-page-header {
-        padding: 0px 0px 16px 0px;
-
-        >div.ant-page-header-heading {
-          >div.ant-page-header-heading-left {
-            >span.ant-page-header-heading-title {
-              border-right: 1px solid @text-color-secondary;
-              padding-right: 12px;
-            }
-
-            >span.ant-page-header-heading-sub-title {
-              font-style: italic;
-              font-size: 0.9em;
-            }
-          }
-        }
-
-      }
+  div.ant-drawer-footer {
+    background-color: #fff;
+    position: absolute;
+    padding-left: 0px;
+    bottom: 0px;
+    width: 100%;
+  }
 
 
-      &.available-interactions {
-        div.ant-list {
-          li.ant-list-item {
-            border-radius: 8px;
-            padding-left: 16px;
-            padding-right: 8px;
-            cursor: pointer;
+  &.interaction-list {
+    div.ant-list {
+      li.ant-list-item {
+        border-radius: 8px;
+        padding-left: 16px;
+        padding-right: 8px;
+        cursor: pointer;
 
-            &:hover {
-              background-color: #f3f3f3;
-            }
-          }
-
-          >div.ant-list-item-meta {
-            display: flex;
-            align-items: center;
-          }
+        &:hover {
+          background-color: #f3f3f3;
         }
       }
 
-      &.setup-interaction {}
-
+      >div.ant-list-item-meta {
+        display: flex;
+        align-items: center;
+      }
     }
   }
+
+  &.setup-interaction {}
+
 }
