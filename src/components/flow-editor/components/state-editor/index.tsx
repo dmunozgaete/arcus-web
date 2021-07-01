@@ -81,7 +81,7 @@ export default class StateEditor extends React.Component<IProps, IState> {
               okText={localize('STATE_EDITOR_POPCONFIRM_YES')}
               cancelText={localize('STATE_EDITOR_POPCONFIRM_NO')}
             >
-              <Button type="link" size="large">
+              <Button type="link" size="large" danger> 
                 {localize('STATE_EDITOR_CANCEL_BUTTON_LABEL')}
               </Button>
             </Popconfirm>
@@ -91,7 +91,7 @@ export default class StateEditor extends React.Component<IProps, IState> {
         style={{ position: 'absolute' }}
       >
         {/* FORM */}
-        <Form name="basic" ref={this.formRef} layout="vertical" initialValues={newState} onFinish={this.onSaveClickHandler} onFinishFailed={() => {}}>
+        <Form name="state_data" ref={this.formRef} layout="vertical" initialValues={newState} onFinish={this.onSaveClickHandler} onFinishFailed={() => {}}>
 
           <Form.Item
             label={localize('STATE_EDITOR_FORM_NAME_LABEL')}
@@ -103,7 +103,7 @@ export default class StateEditor extends React.Component<IProps, IState> {
           </Form.Item>
 
           <Form.Item name="description" label={localize('STATE_EDITOR_FORM_DESCRIPTION_LABEL')}>
-            <Input.TextArea placeholder={localize('STATE_EDITOR_FORM_DESCRIPTION_PLACEHOLDER')} autoSize={{ maxRows: 8, minRows: 5 }} />
+            <Input.TextArea placeholder={localize('STATE_EDITOR_FORM_DESCRIPTION_PLACEHOLDER')} autoSize={{ maxRows: 6, minRows: 4 }} />
           </Form.Item>
 
           <Form.Item

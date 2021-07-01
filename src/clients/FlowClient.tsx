@@ -68,6 +68,11 @@ class FlowClient extends RESTClient implements WithBootedClient {
           type: "STATE",
           label: "Recepcionada",
           end: true,
+          actors: [{
+            id: 'f4067489-a86c-4361-b979-e1c3a70912e3',
+            name: 'Chile',
+            type: 'TAG'
+          }],
           editor_data: {
             x: 329,
             y: 390
@@ -78,6 +83,15 @@ class FlowClient extends RESTClient implements WithBootedClient {
           type: "STATE",
           label: "Rechazada",
           end: true,
+          actors: [{
+            id: 'bf98f2dd-9be6-4da8-a11a-140caf4e9475',
+            name: 'Supermercados',
+            type: 'ROLE'
+          }, {
+            id: 'f4067489-a86c-4361-b979-e1c3a70912e3',
+            name: 'Chile',
+            type: 'TAG'
+          }],
           editor_data: {
             x: 540,
             y: 390
@@ -87,6 +101,20 @@ class FlowClient extends RESTClient implements WithBootedClient {
         {
           type: "STATE",
           label: "Pendiente de Validación",
+          actors: [{
+            id: 'bf98f2dd-9be6-4da8-a11a-140caf4e9475',
+            name: 'Supermercados',
+            type: 'ROLE'
+          },
+          {
+            id: 'd4067489-a86c-4361-b979-e1c3a70912ec',
+            name: 'Juan Jose Diaz',
+            type: 'USER'
+          }, {
+            id: 'f4067489-a86c-4361-b979-e1c3a70912e3',
+            name: 'Chile',
+            type: 'TAG'
+          }],
           editor_data: {
             x: 330,
             y: 250
@@ -111,7 +139,27 @@ class FlowClient extends RESTClient implements WithBootedClient {
           type: "TRANSITION",
           label: "Recepcionar",
           from: "Pendiente de Validación",
-          to: "Recepcionada"
+          to: "Recepcionada",
+          interactions: [
+            {
+              url: "https://suggest.taobao.com/sug",
+              name: "Ejecutar movimiento en SAP",
+              type: "WEBHOOK",
+              description: "Ejecuta un movimiento 201 en SAP",
+              sequence: 1,
+              method: "GET",
+              status_codes_success: [200],
+              timeout_in_seconds_to_wait: 5
+            } as IWebhookInteraction,
+            {
+              name: "Enviar Email de aviso",
+              type: "EMAIL",
+              description: "Envia el mail de confirmación a todos los participantes Envia el mail de confirmación a todos los participantes",
+              sequence: 2,
+              senders: ["dmunozgaete@gmail.com"],
+              subject: "Recepción de mercaderia completada"
+            } as IEmailInteraction
+          ]
         } as IFlowMetadataTransition,
 
         {
@@ -155,8 +203,35 @@ export interface IFlowMetadataState extends IFlowMetadata {
 
 export interface IFlowMetadataTransition extends IFlowMetadata {
   from: string,
-  to: string
+  to: string,
+  interactions: ITransitionInteraction[]
 }
+
+
+
+export interface ITransitionInteraction {
+  type: "WEBHOOK" | "EMAIL";
+  name: string;
+  description?: string;
+  sequence: number;
+  disabled: boolean
+}
+
+
+export interface IWebhookInteraction extends ITransitionInteraction {
+  url: string;
+  method: "POST" | "PUT" | "GET" | "DELETE" | "PATCH";
+  status_codes_success: number[];
+  timeout_in_seconds_to_wait: number;
+}
+
+export interface IEmailInteraction extends ITransitionInteraction {
+  senders: string[];
+  subject: string;
+}
+
+
+
 
 export default new FlowClient({
   baseURL: process.env.REACT_APP_API_ENDPOINT!
