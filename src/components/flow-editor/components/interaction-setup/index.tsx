@@ -8,7 +8,8 @@ import { RightOutlined } from '@ant-design/icons'
 import WebHookInteractionIcon from './../../../../assets/media/interactions/webhook.png'
 import EmailInteractionIcon from './../../../../assets/media/interactions/email.png'
 import WebhookEditor from './webhook-editor';
-import { ITransitionInteraction, IWebhookInteraction } from '../../../../clients/FlowClient';
+import { IEmailInteraction, ITransitionInteraction, IWebhookInteraction } from '../../../../clients/FlowClient';
+import EmailEditor from './email-editor';
 
 const localize = i18n(locales);
 
@@ -69,8 +70,8 @@ export default class InteractionSetup extends React.Component<IProps, IState> {
   }
 
   render() {
-    const { current_step } = this.state;
-    return <div className={`flow-interaction-setup ${current_step.replace(/_/ig, '-').toLowerCase()}`}>
+    const { current_step, interaction_type } = this.state;
+    return <div className={`flow-interaction-setup ${current_step.replace(/_/ig, '-').toLowerCase()} ${(interaction_type || "").toLowerCase()}`}>
       {(() => {
         const customRender: Function = (this as any)[`render${current_step}`];
         if (!customRender) {
@@ -119,7 +120,12 @@ export default class InteractionSetup extends React.Component<IProps, IState> {
         onBack={this.onGoBackToInteractionSelectionHandler}
         onSetupCompleted={this.onSetupInteractionCompletedHandler}
       />
-      case "EMAIL": return <div>TODO</div>
+      case "EMAIL": return <EmailEditor
+        email={newInteraction as IEmailInteraction}
+        onCancel={this.onCancelInteractionHandler}
+        onBack={this.onGoBackToInteractionSelectionHandler}
+        onSetupCompleted={this.onSetupInteractionCompletedHandler}
+      />
     }
   }
 }

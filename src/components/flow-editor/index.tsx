@@ -111,10 +111,21 @@ export default class FlowEditor extends React.Component<IProps, IState> {
 
   onConnectHandler = (params: Edge | Connection) => {
     const { elements } = this.state;
-    const edge = params as Edge
+    const edge = params as Edge<IFlowMetadataTransition>
 
     edge.arrowHeadType = ArrowHeadType.ArrowClosed;
     edge.label = `${localize('NEW_TRANSITION_NAME_LABEL')} ${elements.length + 1}`
+
+    // Add the Metadata for the transition
+    const fromState = elements.find((s) => s.id === edge.source) as FlowElement<IFlowMetadataTransition>;
+    const toState = elements.find((s) => s.id === edge.target) as FlowElement<IFlowMetadataTransition>;
+    edge.data = {
+      from: fromState.data!.label,
+      to: toState.data!.label,
+      interactions: [],
+      label: edge.label.toString(),
+      type: "TRANSITION",
+    } 
 
     const updatedElements = addEdge(params, elements);
     this.setState({

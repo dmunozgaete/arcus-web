@@ -83,6 +83,20 @@ const LOCALES = {
   WEBHOOK_EDITOR_FORM_METRIC_LABEL: "Segundo(s)",
 
   WEBHOOK_EDITOR_FORM_SAVE_LABEL: "Guardar",
-  WEBHOOK_EDITOR_FORM_CANCEL_LABEL: "Cancelar"
+  WEBHOOK_EDITOR_FORM_CANCEL_LABEL: "Cancelar",
+
+
+  // EMAIL EDITOR'S
+  EMAIL_EDITOR_FORM_NAME_LABEL: "Nombre",
+  EMAIL_EDITOR_FORM_NAME_TOOLTIP: "Nombre reconocible de la interacción",
+  EMAIL_EDITOR_FORM_NAME_REQUIRED_MESSAGE: "El nombre es requerido",
+
+  EMAIL_EDITOR_FORM_DESCRIPTION_LABEL: "Descripción",
+  EMAIL_EDITOR_FORM_DESCRIPTION_PLACEHOLDER: "Ingresa una descripción del email",
+
+  EMAIL_EDITOR_FORM_DISABLED_LABEL: "Deshabilitar Interacción",
+
+  EMAIL_EDITOR_FORM_SAVE_LABEL: "Guardar",
+  EMAIL_EDITOR_FORM_CANCEL_LABEL: "Cancelar"
 };
 export default LOCALES;

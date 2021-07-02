@@ -22,14 +22,17 @@
 
   }
 
-  div.ant-drawer-footer {
-    background-color: #fff;
-    position: absolute;
-    padding-left: 0px;
-    bottom: 0px;
-    width: 100%;
+  div.form-editor {
+    height: calc(100% - 137px);
+    padding-right: 16px;
+    overflow-y: scroll;
   }
 
+  div.ant-drawer-footer {
+    background-color: #fff;
+    padding-left: 0px;
+    bottom: 0px;
+  }
 
   &.interaction-list {
     div.ant-list {
@@ -51,6 +54,14 @@
     }
   }
 
-  &.setup-interaction {}
+  &.interaction-editor {
+    &.webhook {
+      
+    }
+
+    &.email {
+      
+    }
+  }
 
 }
